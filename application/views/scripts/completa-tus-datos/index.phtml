@@ -1,0 +1,35 @@
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/customer-details.js"></script>
+
+<div class="grid-30 push-35" style="text-align:center;">
+    <h1>Datos Basicos</h1>
+</div>
+<div class="clear"></div>
+<div class="grid-30 push-35 customer-details">
+    <form id="details-form" method="post" action="/completa-tus-datos/guardar-datos">
+        <div class="grid-100 row">
+            <label for="empresa">Empresa</label>
+            <input name="empresa" class="empresa" type="text" value="<?php echo $this->customerDetails['empresa']; ?>" />
+        </div>
+        <div class="clear"></div>
+        <div class="grid-100 row">
+            <label for="responsable">Responsable de contacto</label>
+            <div class="clear"></div>
+            <input name="responsable" class="responsable" type="text" value="<?php echo $this->customerDetails['responsable']; ?>"/>
+        </div>
+        <div class="clear"></div>
+        <div class="grid-100 row">
+            <label for="tel">Tel&nbsp;&nbsp;</label>
+            <input name="tel" class="tel" type="text" value="<?php echo $this->customerDetails['tel']; ?>"/>
+        </div>
+        <div class="clear"></div>
+        <div class="grid-100 row">
+            <label for="mail">Mail</label>
+            <input name="mail" class="mail" type="text" value="<?php echo $this->customerDetails['mail']; ?>"/>
+        </div>
+    </form>
+</div>
+<div class="clear"></div>
+<div class="grid-10 push-55" style="padding-right:0;">
+    <a href="" onclick="return false;" id="submit" class="button customer-details-submit">Submit</a>
+</div>

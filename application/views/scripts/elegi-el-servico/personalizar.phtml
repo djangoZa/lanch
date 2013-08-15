@@ -1,0 +1,110 @@
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/bootstrap.tooltip.min.js"></script>
+<script type="text/javascript" src="/js/personalizar.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        changeAmountOfGuests();
+        $("#guests").bind('change', function(){
+            changeAmountOfGuests();
+            saveGuests();
+        });
+    });
+</script>
+<div class="grid-65 push-5">
+
+    <input type="hidden" id="comboId" name="comboId" value="<?php echo $this->combo->getId(); ?>" />
+    <input type="hidden" id="size" name="size" value="<?php echo $this->size; ?>" />
+    <input type="hidden" class="order-input" id="minimimGuests" value="<?php echo $this->combo->getMinimimGuests(); ?>" />
+    
+    <div class="grid-50 combo-title">
+        <h1>Servico Personalizado</h1>
+        <p>SELECCIONE LOS PLATOS DE SU PREFERENCIA</p>
+    </div>
+
+    <div class="grid-50 combo-top-filters">
+
+        <h1>Servicos Prearmados</h1>
+
+        <ul class="combo-filter">
+            <?php foreach($this->combos as $combo): ?>
+                <li>
+                    <a class="button combo-name <?php echo ($combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=full"><?php echo $combo->getName(); ?></a>
+                    <ul class="combo-filter-sizes">
+                        <li><a class="button <?php echo ($this->size == 'basico' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=basico">B</a></li>
+                        <li><a class="button <?php echo ($this->size == 'medio' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=medio">M</a></li>
+                        <li><a class="button <?php echo ($this->size == 'full' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=full">F</a></li>
+                        <li>
+                            <a href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=personal"
+                               class="button 
+                                      <?php echo ($this->isPersonalTabInActive($this, $combo)) ? 'inactive' : null; ?>
+                                      <?php echo ($this->isPersonalTabActive($this, $combo)) ? 'active' : null; ?>"
+                               onclick="<?php echo ($this->isPersonalTabInActive($this, $combo)) ? 'return false;' : null; ?>"
+                            >P</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="delimeter"></li>
+            <?php endforeach ?>
+        </ul>
+
+    </div>
+
+    <div class="grid-100 combo-products">
+
+        <?php foreach ($this->products as $categoryId => $groups): ?>
+
+            <div class="category">
+
+                <h1><?php echo $this->categories[$categoryId]->getName(); ?></h1>
+
+                <?php foreach($groups as $groupId => $products): ?>
+
+                    <div class="group">
+
+                        <h1><?php echo $this->groups[$groupId]->getName(); ?></h1>
+
+                        <ul>
+                            <?php foreach ($products as $product): ?>
+                                <li>
+                                    <input
+                                        data="<?php echo $product->getId(); ?>"
+                                        type="checkbox"
+                                        <?php echo (in_array($product->getId(), $this->combo->getSelectedProductIdsBySizeId($this->size))) ? 'checked' : null ; ?>
+                                    />
+                                    <?php echo $product->getName(); ?>
+                                </li>
+                            <?php endforeach ?>
+                        </ul>
+
+                    </div>
+
+                <?php endforeach ?>
+
+            </div>
+
+        <?php endforeach ?>
+
+    </div>
+
+</div>
+
+<div class="grid-25 push-5">
+
+    <div class="grid-100 combo-right-filters">
+
+        <img src="/img/combo-right-filter-image.png" width="100%"/>
+
+        <form action="" method="post">
+
+            <div class="row">
+                <label>INVITADOS:</label>
+                <input id="guests" type="text" value="<?php echo $this->order->getGuests(); ?>"/>
+            </div>
+
+            <a class="button" href="/customizalo-a-tu-medida?comboId=<?php echo $this->combo->getId();?>&size=<?php echo $this->size; ?>">PRESUPUESTAR</a>
+
+        </form>
+
+    </div>
+
+</div>

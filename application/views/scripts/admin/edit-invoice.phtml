@@ -1,0 +1,140 @@
+<h1>Ver Factura</h1>
+
+<div class="control-group">
+    <div class="controls">
+        <a class="btn btn-success" href="/admin/invoices">
+            <i class="icon-arrow-left icon-white"></i>
+        </a>
+    </div>
+</div>
+
+<hr/>
+
+<h2>Información General</h2>
+
+<p>
+    <strong>Empreza</strong>&nbsp;<?php echo $this->booking->getCompanyName(); ?><br/>
+    <strong>Responsable de contacto</strong>&nbsp;<?php echo $this->booking->getContactPersonName();?><br/>
+    <strong>Tel</strong>&nbsp;<?php echo $this->booking->getTelephoneNumber();?><br/>
+    <strong>Mail</strong>&nbsp;<?php echo $this->booking->getEmailAddress(); ?><br/>
+    
+</p>
+
+<hr/>
+
+<p>
+    <strong>Dirección</strong><br/>
+    <?php echo $this->booking->getVenueAddress(); ?><br/>
+    <strong>Fecha</strong>&nbsp;<?php echo $this->booking->getDateOfEvent(); ?><br/>
+    <strong>Horario</strong>&nbsp;<?php echo $this->booking->getHourOfEvent(); ?><br/>
+    <strong>Invitados</strong>&nbsp;<?php echo $this->booking->getGuests(); ?><br/>
+    <strong>Camareros Sugeridos</strong>&nbsp;<?php echo $this->booking->getWaiters(); ?><br/>
+    <?php $bool = $this->booking->getFormalDishes(); ?>
+    <strong>Vajilla Formal</strong>&nbsp;<?php echo (!empty($bool)) ? 'Requerida' : 'No Requerida'; ?>
+</p>
+
+<hr/>
+
+<p>
+    <strong>Equipmento Extra</strong><br/>
+    <?php echo $this->booking->getExtraEquipmentNotes(); ?><br/><br/>
+    <strong>Observaciones</strong><br/>
+    <?php echo $this->booking->getVenueNotes(); ?>
+</p>
+
+<hr/>
+
+<p>
+    <h2>Listado de Items</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($this->booking->getLineItems() as $lineItem): ?>
+                <tr>
+                    <td><?php echo $lineItem->getName();?></td>
+                    <td><?php echo $lineItem->getQuantity();?></td>
+                    <td><?php echo $lineItem->getPrice();?></td>
+                    <td><?php echo $lineItem->getTotal();?></td>
+                </tr>
+            <?php endforeach ?>
+        </tbody>
+    </table>
+</p>
+
+<hr/>
+
+<h2>Ajustes</h2>
+<p>
+    
+    <p>
+        <a data-toggle="modal" class="btn btn-primary" href="/admin/add-invoice-adjustment-popup/?bookingId=<?php echo $this->booking->getId();?>" data-target="#modal">Agregar Ajuste</a>
+    </p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+                <?php $adjustments = $this->booking->getAdjustments(); ?>
+                <?php if(!empty($adjustments)): ?>
+                    <?php foreach ($adjustments as $adjustment): ?>
+                        <tr>
+                            <td><?php echo $adjustment->getDescription(); ?></td>
+                            <td><?php echo $adjustment->getAmount(); ?></td>
+                            <td><?php echo date("Y-m-d H:i", strtotime($adjustment->getDate())); ?></td>
+                        </tr>
+                    <?php endforeach ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="3">
+                            &nbsp;
+                        </td>
+                    </tr>
+                <?php endif ?>
+        </tbody>
+    </table>
+</p>
+
+<hr/>
+
+<h2>Total</h2>
+
+<p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>SubTotal</th>
+                <th>IVA</th>
+                <th>Descuento</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><?php printf("%.2f", $this->booking->getSubTotal()); ?></td>
+                <td><?php echo $this->booking->getTaxPercent(); ?>%</td>
+                <td><?php echo $this->booking->getDiscount(); ?>%</td>
+                <td><?php printf("%.2f", $this->booking->getTotal()); ?></td>
+            </tr>
+        </tbody>
+    </table>
+</p>
+
+<div id="modal" class="modal hide fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Agregar Ajuste</h3>
+  </div>
+  <div class="modal-body">
+  </div>
+</div>

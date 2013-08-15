@@ -1,0 +1,153 @@
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/jquery-ui.datepicker.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.tooltip.min.js"></script>
+<script type="text/javascript" src="/js/order.js"></script>
+<script type="text/javascript">
+$(document).ready(function()
+{
+    $( "#date" ).datepicker({
+        autoSize:true
+    });
+});
+</script>
+  
+<div class="grid-30 push-5 contracted-service">
+
+    <input type="hidden" class="order-input" id="comboId" value="<?php echo $this->combo->getId(); ?>" />
+    <input type="hidden" class="order-input" id="size" value="<?php echo $this->size; ?>" />
+    <input type="hidden" class="order-input" id="minimimGuests" value="<?php echo $this->combo->getMinimimGuests(); ?>" />
+    <input type="hidden" class="order-input" id="discount" value="<?php echo $this->combo->getDiscount(); ?>" />
+    <div class="row">
+
+        <h1>Servicio Contratado</h1>
+
+        <ul class="combo-filter">
+            <?php foreach($this->combos as $combo): ?>
+                <li>
+                    <a class="button combo-name <?php echo ($combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/customizalo-a-tu-medida?comboId=<?php echo $combo->getId(); ?>&size=full"><?php echo $combo->getName(); ?></a>
+                    <ul class="combo-filter-sizes">
+                        <li><a class="button <?php echo ($this->size == 'basico' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/customizalo-a-tu-medida?comboId=<?php echo $combo->getId(); ?>&size=basico">B</a></li>
+                        <li><a class="button <?php echo ($this->size == 'medio' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/customizalo-a-tu-medida?comboId=<?php echo $combo->getId(); ?>&size=medio">M</a></li>
+                        <li><a class="button <?php echo ($this->size == 'full' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/customizalo-a-tu-medida?comboId=<?php echo $combo->getId(); ?>&size=full">F</a></li>
+                        <li><a href="/customizalo-a-tu-medida?comboId=<?php echo $combo->getId(); ?>&size=personal"
+                               class="button 
+                                      <?php echo ($this->isPersonalTabInActive($this, $combo)) ? 'inactive' : null; ?>
+                                      <?php echo ($this->isPersonalTabActive($this, $combo)) ? 'active' : null; ?>"
+                               onclick="<?php echo ($this->isPersonalTabInActive($this, $combo)) ? 'return false;' : null; ?>"
+                            >P</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="delimeter"></li>
+            <?php endforeach ?>
+        </ul>
+
+    </div>
+
+    <div class="row">
+
+        <h2>Detalle:</h2>
+
+        <ul class="detalle">
+            <?php foreach ($this->selectedProductIds as $productId): ?>
+                <li><?php echo $this->products[$productId]->getName(); ?></li>
+            <?php endforeach ?>
+        </ul>
+
+    </div>
+
+    <div class="row">
+        <a href="/elegi-el-servico/personalizar?comboId=<?php echo $this->combo->getId(); ?>&size=<?php echo $this->size; ?>" class="button">MODIFICAR</a>
+    </div>
+
+</div>
+<div class="grid-30 push-5 your-order">
+
+    <h1>Su Pedido</h1>
+
+    <form>
+
+        <div class="row">
+            <?php $guests = $this->order->getGuests();?>
+            <label>INVITADOS:</label>
+            <input data-toggle="tooltip" class="order-input" id="guests" type="text" value="<?php echo (!empty($guests)) ? $guests : $this->combo->getMinimimGuests(); ?>"/>
+        </div>
+
+        <div class="row">
+            <label>CAMAREROS SUGERIDOS:</label>
+            <?php $waiters = $this->order->getWaiters(); ?>
+            <input data-toggle="tooltip" class="order-input" id="waiters" type="text" value="<?php echo (!empty($waiters)) ? $waiters : $this->combo->getMinimumWaiters(); ?>"/>
+        </div>
+
+        <div class="row">
+            <label>VAJILLA FORMAL:</label>
+            <select class="order-input" style="clear:float;" id="formalDishes">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
+        </div>
+
+        <div class="row equipment">
+            <label>EQUIPMENTO:</label>
+            <ul>
+                <?php foreach($this->equipment as $equipment): ?>
+                    <li>
+                        <input type="checkbox" class="order-input" id="equipment" data="<?php echo $equipment->getId(); ?>" value="1" style="width:15px" checked/>
+                        <?php echo $equipment->getName(); ?>
+                    </li>
+                <?php endforeach ?>
+            </ul>
+        </div>
+        
+        <div class="row equipment">
+            <label>EQUIPMENTO EXTRA:</label><br/>
+            <textarea class="order-input" id="extraEquipment" style="width:100%;height:100px;"></textarea>
+        </div>
+
+        <div class="row info-util">
+            <label>INFO ÛTIL:</label>
+            <p>Suspendisse quis dui eget neque tincidunt porttitor ac sed turpis. Maecenas sit amet neque risus. Nunc a nibh lacus. Maecenas lorem urna, ornare quis bibendum a, placerat in ligula.</p>
+        </div>
+
+        <div class="row">
+            <label>$/pers:</label>
+            <input type="text" id="pricePerPerson" value="" disabled>
+            <label>TOTAL:</label>
+            <input type="text" id="total" value="" disabled>
+        </div>
+
+    </form>
+
+</div>
+
+<div class="grid-30 push-5 event-data">
+
+    <h1>Datos del Evento</h1>
+
+    <div class="row">
+        <label>FECHA:</label>
+        <input type="text" class="order-input" id="date" style="padding:5px;cursor:pointer;"/>
+    </div>
+
+    <div class="row">
+        <label>DIRECCIÓN:</label><br/>
+        <textarea class="order-input" id="address"></textarea>
+    </div>
+
+    <div class="row">
+        <label>HORARIO:</label>
+        <select class="order-input" id="time">
+            <?php for ($a=1; $a<25; $a++) : ?>
+                <option value="<?php echo $a; ?>:00"><?php echo $a; ?>:00</option>
+            <?php endfor ?>
+        </select>
+    </div>
+
+    <div class="row">
+        <label>OBSERVACIONES:</label><br/>
+        <textarea class="order-input" id="notes"></textarea>
+    </div>
+
+    <a href="" onclick="return false;" class="button" id="confirmalo">CONFIRMALO</a>
+
+</div>

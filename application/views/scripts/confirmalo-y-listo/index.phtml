@@ -1,0 +1,85 @@
+<div class="grid-100 push-10">
+    <h1>Confirmacion</h1>
+</div>
+<div class="grid-70 push-10 confirmation-screen">
+    <div class="grid-60 row">
+        <label>Empresa</label> <?php echo $this->customerDetails['empresa']; ?><br/>
+        <label>Responsable</label> <?php echo $this->customerDetails['responsable']; ?><br/>
+        <label>Tel</label> <?php echo $this->customerDetails['tel']; ?><br/>
+        <label>Mail</label> <?php echo $this->customerDetails['mail']; ?>
+    </div>
+    <div class="grid-40 row">
+        <label>Direccion</label><br/>
+        <?php echo nl2br($this->order->getAddress()); ?><br/>
+    </div>
+    <div class="clear"></div>
+    <div class="grid-60 row">
+        <label>Fetcha Del Evento</label> <?php echo $this->order->getDate(); ?><br/>
+        <label>Horrio Del Servico</label> <?php echo $this->order->getTime(); ?><br/>
+        <label>Invitados</label> <?php echo $this->order->getGuests(); ?><br/>
+    </div>
+    <div class="grid-40 row">
+        <label>Notes</label><br/>
+        <?php echo nl2br($this->order->getNotes()); ?>
+    </div>
+    <div class="clear"></div>
+    <div class="grid-60 row">
+        <?php foreach($this->products as $category): ?>
+            <?php foreach($category as $groupId => $group): ?>
+                <?php $groupProductIds = array_keys($group); ?>
+                <?php $productIdDiff = array_intersect($groupProductIds, $this->selectedProductIds); ?>
+                <?php if(!empty($productIdDiff)): ?>
+                    <div class="grid-50 confirmation-product-group" style="margin:0;padding:0;">
+                        <label><?php echo ucwords($this->groups[$groupId]->getName()); ?></label>
+                        <ul>
+                        <?php foreach ($group as $product): ?>
+                            <?php if (in_array($product->getId(), $this->selectedProductIds)): ?>
+                                <li><?php echo $product->getName(); ?></li>
+                            <?php endif ?>
+                        <?php endforeach ?>
+                        </ul>
+                    </div>
+                <?php endif ?>
+            <?php endforeach ?>
+        <?php endforeach ?>
+    </div>
+    <div class="grid-40 row">
+        <label>Camareros Sugeridos</label>
+        <?php echo $this->order->getWaiters(); ?><br/>
+        <label>Vajilla Formal</label>
+        <?php echo ($this->order->getFormalDishes() == 0) ? 'Not' : null ?> Required<br/>
+        <br/><br/>
+        <label>Equipmento</label><br/>
+        <ul class="confirmation-equipment">
+            <?php foreach($this->equipment as $equipment):?>
+                <?php if(!in_array($equipment->getId(), $this->order->getEquipmentBlackList())): ?>
+                    <li><?php echo $equipment->getName(); ?></li>
+                <?php endif ?>
+            <?php endforeach ?>
+        </ul><br/>
+        <label>Equipmento Extra</label><br/>
+        <?php echo nl2br($this->order->getExtraEquipment()); ?>
+    </div>
+    <div class="grid-60 row">
+        <label>Sebastian Jinchuk</label><br/>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet sapien at mi imperdiet congue. 
+        Nunc tristique erat eu lectus sagittis ornare. 
+        Etiam elementum, lectus eget congue malesuada, lacus libero molestie magna, eget facilisis dolor odio quis nunc. 
+        Mauris nec rhoncus enim.
+    </div>
+    <div class="grid-40 row">
+        <label>SubTotal</label> <?php echo round($this->order->getSubTotal(), 2); ?><br/>
+        <label>Discount</label> <?php echo $this->order->getDiscount($this->size); ?>%<br/>
+        <label>IVA</label> <?php echo $this->order->getTax()?>%<br/>
+        <label>Total</label> <?php echo round($this->order->getTotal(), 2); ?>
+    </div>
+</div>
+<div class="grid-20 push-10">
+    <div class="grid-100" style="padding-bottom:5px;">
+        <a href="customizalo-a-tu-medida?comboId=<?php echo $this->combo->getId(); ?>&size=<?php echo $this->order->getSize(); ?>" class="button">Modificar</a>
+    </div>
+    <div class="clear"></div>
+    <div class="grid-100">
+        <a href="/confirmalo-y-listo/completar" class="button">Completar</a>
+    </div>
+</div>

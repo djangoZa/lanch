@@ -1,0 +1,148 @@
+<h2>Editar Armado</h2>
+
+<?php if(!empty($_POST) && empty($this->messages)): ?>
+    <div class="alert alert-success">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      Your changes were saved succesfully!
+    </div>
+<?php else: ?>
+    <?php foreach ($this->messages as $key => $messages): ?>
+        <?php foreach ($messages as $message): ?>
+            <div class="alert alert-error">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <?php echo $message; ?>
+            </div>
+        <?php endforeach ?>
+    <?php endforeach ?>
+<?php endif ?>
+
+<form class="form-vertical" action="" method="post" enctype="multipart/form-data">
+
+    <input type="hidden" name="id" value="<?php echo $this->combo->getId(); ?>" />
+
+        <div class="row">
+            <div class="span4">
+
+                <div class="control-group">
+                    <div class="controls">
+                        <a class="btn btn-success" href="/admin/combos">
+                            <i class="icon-arrow-left icon-white"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="name">Nombre</label>
+                    <div class="controls">
+                      <input type="text" name="name" id="name" value="<?php echo $this->combo->getName(); ?>">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="base_price">Precio Base</label>
+                    <div class="controls">
+                        <div class="input-prepend input-append">
+                            <span class="add-on">$</span>
+                            <input class="span1" id="appendedPrependedInput" type="text" name="base_price" id="base_price" value="<?php echo $this->combo->getBasePrice(); ?>">
+                            <span class="add-on">.00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label" for="base_price">Descuento Armado</label>
+                    <div class="controls">
+                        <div class="input-prepend">
+                            <span class="add-on">%</span>
+                            <input class="span1" id="prependedInput" type="text" name="discount" id="discount" value="<?php echo $this->combo->getDiscount(); ?>">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label" for="base_price">Invitados Minimo</label>
+                    <div class="controls">
+                        <div class="input">
+                            <input class="span1" type="text" name="minimum_guests" id="minimum_guests" value="<?php echo $this->combo->getMinimimGuests(); ?>">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="base_price">Imagen</label>
+                    <div class="controls">
+                        <div class="fileupload fileupload-new" data-provides="fileupload">
+                          <div class="input-append">
+                            <div class="uneditable-input span3"><i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span></div><span class="btn btn-file"><span class="fileupload-new">Select File</span><span class="fileupload-exists">Change</span><input type="file" name="image"/></span>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span4">
+                <img src="<?php echo $this->combo->getImageUrl(); ?>" class="img-polaroid">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="span7">
+                <div class="control-group">
+                    <label class="control-label">Productos</label>
+                    <div class="tabbable">
+                      <ul class="nav nav-tabs">
+                        <?php foreach ($this->sizes as $sizeId => $size): ?>
+                            <li <?php echo ($sizeId == 'basico')? 'class="active"' : null;?>><a href="#<?php echo $sizeId; ?>" data-toggle="tab"><?php echo $size; ?></a></li>
+                        <?php endforeach ?>
+                      </ul>
+                      <div class="tab-content">
+                        <?php foreach ($this->sizes as $sizeId => $size): ?>
+                            <div class="tab-pane <?php echo ($sizeId == 'basico')? 'active' : null;?>" id="<?php echo $sizeId; ?>">
+                                <div class="accordion">
+                                    <?php foreach ($this->products as $categoryId => $groups): ?>
+                                        <div class="accordion-group">
+                                            <div class="accordion-heading">
+                                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#<?php echo $sizeId . '-' . $categoryId; ?>" href="#<?php echo $sizeId . '-' . $categoryId; ?>">
+                                                    <?php echo $this->categories[$categoryId]->getName(); ?>
+                                                </a>
+                                            </div>
+                                            <div id="<?php echo $sizeId . '-' . $categoryId; ?>" class="accordion-body collapse in">
+                                                <div class="accordion-inner">
+                                                    <?php foreach ($groups as $groupId => $products): ?>
+                                                        <div class="span2" style="margin:0;padding:0;">
+                                                            <strong><?php echo $this->groups[$groupId]->getName(); ?></strong>
+                                                            <?php foreach($products as $product): ?>
+                                                                <label class="checkbox">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        name="combo_products[<?php echo $sizeId; ?>][<?php echo $product->getId(); ?>]"
+                                                                        value="1"
+                                                                        <?php echo (in_array($product->getId(), $this->combo->getSelectedProductIdsBySizeId($sizeId))) ? 'checked' : null ; ?>
+                                                                    >
+                                                                    <?php echo $product->getName(); ?>
+                                                                </label>
+                                                            <?php endforeach ?>
+                                                        </div>
+                                                    <?php endforeach ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach ?>
+                                </div>
+                            </div>
+                        <?php endforeach ?>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="span4">
+                <div class="control-group">
+                    <div class="controls">
+                        <input class="btn btn-primary" type="submit" value="Guardar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+</form>

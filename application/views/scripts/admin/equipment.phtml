@@ -1,0 +1,33 @@
+<h2>Equipmentos</h2>
+
+<a href="/admin/add-equipment" class="btn btn-success" style="margin:5px 0 15px 0;"><i class="icon-plus icon-white"></i> Nuevo Equipmento</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->equipment as $equipment): ?>
+        <tr>
+            <td><?php echo $equipment->getName(); ?></td>
+            <td>$<?php echo $equipment->getPrice(); ?></td>
+            <td>
+                <div class="btn-group">
+                  <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="icon-tasks icon-white"></i>
+                    <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a href="/admin/edit-equipment?equipmentId=<?php echo $equipment->getId(); ?>"><i class="icon-pencil"></i> Editar</a></li>
+                    <li><a href="/admin/delete-equipment?equipmentId=<?php echo $equipment->getId(); ?>" onclick="return confirm('Are you sure you want to delete this equipment?')"><i class="icon-trash"></i> Borrar</a></li>
+                  </ul>
+                </div>
+            </td>
+        </tr>
+        <?php endforeach ?>
+    </tbody>
+</table>

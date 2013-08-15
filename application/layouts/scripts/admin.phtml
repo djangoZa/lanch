@@ -1,0 +1,58 @@
+<?php echo $this->doctype() ?>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Lanch Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/css/jasny-bootstrap.css" rel="stylesheet">
+    <link href="/css/admin.css" rel="stylesheet">
+    
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.js"></script>
+    <script src="../js/bootstrap-fileupload.js"></script>
+    
+    <div class="container">
+      <div class="row">
+        <div class="span10 offset1">
+          <div class="navbar navbar-inverse navbar-top">
+              <div class="navbar-inner">
+                <div class="container">
+                  <img class="logo" src="/img/logo_admin.png" />
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="span2 offset1 bs-docs-sidebar">
+          <ul class="nav nav-list bs-docs-sidenav">
+            <li <?php echo (strstr(Zend_Controller_Front::getInstance()->getRequest()->getActionName(),'combo'))? 'class="active"' : null; ?>><a href="/admin/combos"><i class="icon-chevron-right"></i> Armados</a></li>
+            <li <?php echo (strstr(Zend_Controller_Front::getInstance()->getRequest()->getActionName(),'product'))? 'class="active"' : null; ?>><a href="/admin/products"><i class="icon-chevron-right"></i> Productos</a></li>
+            <li <?php echo (strstr(Zend_Controller_Front::getInstance()->getRequest()->getActionName(),'equipment'))? 'class="active"' : null; ?>><a href="/admin/equipment"><i class="icon-chevron-right"></i> Equipmentos</a></li>
+            <li <?php echo (strstr(Zend_Controller_Front::getInstance()->getRequest()->getActionName(),'categor'))? 'class="active"' : null; ?>><a href="/admin/categories"><i class="icon-chevron-right"></i> Categoría</a></li>
+            <li <?php echo (strstr(Zend_Controller_Front::getInstance()->getRequest()->getActionName(),'group'))? 'class="active"' : null; ?>><a href="/admin/groups"><i class="icon-chevron-right"></i> Grupos</a></li>
+            <li <?php echo (strstr(Zend_Controller_Front::getInstance()->getRequest()->getActionName(),'invoice'))? 'class="active"' : null; ?>><a href="/admin/invoices"><i class="icon-chevron-right"></i> Facturas</a></li>
+          </ul>
+        </div>
+        <div class="span8">
+          <?php echo $this->layout()->content ?>
+        </div>
+      </div>     
+    </div>
+
+  </body>
+</html>

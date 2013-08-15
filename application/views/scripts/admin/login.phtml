@@ -1,0 +1,18 @@
+
+
+<form action="/admin/login" method="post" class="form-signin">
+    <center>
+        <img src="/img/logo.gif" />
+    </center>
+    <br/>
+
+    <?php if(!empty($this->message)): ?>
+        <div class="alert alert-error">
+            <?php echo $this->message; ?>
+        </div>
+    <?php endif ?>
+
+    <input name="username" type="text" class="input-block-level" placeholder="Usuario / Email">
+    <input name="password" type="password" class="input-block-level" placeholder="Contraseña">
+    <button class="btn btn-large btn-primary" type="submit">Entrar</button>
+</form>

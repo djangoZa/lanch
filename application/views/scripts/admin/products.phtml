@@ -1,0 +1,41 @@
+<h2>Productos</h2>
+
+<a href="/admin/add-product" class="btn btn-success" style="margin:5px 0 15px 0;"><i class="icon-plus icon-white"></i> Nuevo Producto</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Categoría</th>
+            <th>Grupo</th>
+            <th>Camareros</th>
+            <th>Equipamiento</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->products as $product): ?>
+        <tr>
+            <td><?php echo $product->getName(); ?></td>
+            <td>$<?php echo $product->getPrice(); ?></td>
+            <td><?php echo (!empty($this->categories[$product->getCategoryId()])) ? $this->categories[$product->getCategoryId()]->getName() : ''; ?></td>
+            <td><?php echo (!empty($this->groups[$product->getGroupId()])) ? $this->groups[$product->getGroupId()]->getName() : '' ?></td>
+            <td><i class="icon-<?php echo ($product->getNeedsWaiters() == true) ? 'ok' : 'remove'; ?>"></i></td>
+            <td><i class="icon-<?php echo ($product->getEquipment() != array()) ? 'ok' : 'remove'; ?>"></i></td>
+            <td>
+                <div class="btn-group">
+                  <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="icon-tasks icon-white"></i>
+                    <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a href="/admin/edit-product?productId=<?php echo $product->getId(); ?>"><i class="icon-pencil"></i> Editar</a></li>
+                    <li><a href="/admin/delete-product?productId=<?php echo $product->getId(); ?>" onclick="return confirm('Are you sure you want to delete this product?')"><i class="icon-trash"></i> Borrar</a></li>
+                  </ul>
+                </div>
+            </td>
+        </tr>
+        <?php endforeach ?>
+    </tbody>
+</table>

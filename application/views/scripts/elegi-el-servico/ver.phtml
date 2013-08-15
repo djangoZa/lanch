@@ -1,0 +1,57 @@
+<div class="grid-container">
+    <div class="grid-30 push-5 combo">
+        <div class="combo-image" style="background:url(<?php echo $this->combo->getImageUrl(); ?>) no-repeat;"></div>
+        <div class="combo-message">
+            <span>&nbsp;<?php echo strtoupper($this->size); ?> $<?php echo $this->comboTotalPrice; ?>/P</span>
+        </div>
+        <h1><?php echo $this->combo->getName(); ?></h1>
+        <ul>
+            <li>
+                <a class="button <?php echo ($this->size == 'basico') ? 'active' : null; ?>" href="/elegi-el-servico/ver/?size=basico&comboId=<?php echo $this->combo->getId(); ?>">BASICÓ</a>
+            </li>
+            <li>
+                <a class="button <?php echo ($this->size == 'medio') ? 'active' : null; ?>" href="/elegi-el-servico/ver/?size=medio&comboId=<?php echo $this->combo->getId(); ?>">MEDIO</a>
+            </li>
+            <li>
+                <a class="button <?php echo ($this->size == 'full') ? 'active' : null; ?>" href="/elegi-el-servico/ver/?size=full&comboId=<?php echo $this->combo->getId(); ?>">FULL</a>
+            </li>
+        </ul>
+        <a class="button" href="/elegi-el-servico/personalizar?comboId=<?php echo $this->combo->getId(); ?>&size=full">
+            PERSONALIZAR
+        </a>
+    </div>
+    <div class="grid-30 push-5 combo-description">
+        <ul>
+            <?php foreach ($this->combo->getSelectedProductIdsBySizeId($this->size) as $productId): ?>
+                <li><?php echo $this->products[$productId]->getName(); ?></li>
+            <?php endforeach ?>
+        </ul>
+        <a class="button" href="/customizalo-a-tu-medida?comboId=<?php echo $this->combo->getId();?>&size=<?php echo $this->size; ?>">PRESUPUESTAR</a>
+    </div>
+    <div class="grid-30 push-5">
+        <div class="grid-container">
+            <?php foreach ($this->combos as $combo): ?>
+                <?php if($combo->getId() != $this->combo->getId()): ?>
+                    <div class="combo-mini">
+                        <img src="<?php echo $combo->getImageUrl(); ?>" width="40%"/>
+                        <h1><?php echo $combo->getName(); ?></h1>
+                        <ul>
+                            <li>
+                                <a class="button" href="/elegi-el-servico/ver/?size=basico&comboId=<?php echo $combo->getId(); ?>">BASICÓ</a>
+                            </li>
+                            <li>
+                                <a class="button" href="/elegi-el-servico/ver/?size=medio&comboId=<?php echo $combo->getId(); ?>">MEDIO</a>
+                            </li>
+                            <li>
+                                <a class="button" href="/elegi-el-servico/ver/?size=full&comboId=<?php echo $combo->getId(); ?>">FULL</a>
+                            </li>
+                        </ul>
+                        <a class="button" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>">
+                            PERSONALIZAR
+                        </a>
+                    </div>
+                <?php endif ?>
+            <?php endforeach ?>
+    </div>
+</div>
+</div>

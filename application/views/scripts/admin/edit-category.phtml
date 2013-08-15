@@ -1,0 +1,44 @@
+<h2>Editar Categoría</h2>
+
+<?php if(!empty($_POST) && empty($this->messages)): ?>
+    <div class="alert alert-success">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      Your changes were saved succesfully!
+    </div>
+<?php else: ?>
+    <?php foreach ($this->messages as $key => $messages): ?>
+        <?php foreach ($messages as $message): ?>
+            <div class="alert alert-error">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <?php echo $message; ?>
+            </div>
+        <?php endforeach ?>
+    <?php endforeach ?>
+<?php endif ?>
+
+<form class="form-vertical" action="" method="post">
+
+    <input type="hidden" name="id" value="<?php echo $this->category->getId(); ?>" />
+
+    <div class="control-group">
+        <div class="controls">
+            <a class="btn btn-success" href="/admin/categories">
+                <i class="icon-arrow-left icon-white"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="name">Nombre</label>
+        <div class="controls">
+          <input type="text" name="name" id="name" value="<?php echo $this->category->getName(); ?>">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <input class="btn btn-primary" type="submit" value="Guardar" />
+        </div>
+    </div>
+
+</form>

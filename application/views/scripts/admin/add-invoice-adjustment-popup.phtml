@@ -1,0 +1,57 @@
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#add").bind('click', function(){
+            if(inputsAreValid())
+            {
+                $.ajax({
+                    url:'/admin/add-invoice-adjustment-ajax',
+                    data:{
+                        'bookingId':$("#bookingId").val(),
+                        'options':
+                        {
+                            'description': $("#description").val(),
+                            'amount': $("#amount").val()
+                        }
+                    }
+                }).done(function(response){
+                    parent.location.reload();
+                });
+            }
+            return false;
+        });
+    });
+
+    function inputsAreValid()
+    {
+        if($("#description").val() == '')
+        {
+            alert('Por favor, proporcione una descripcion');
+            $("#description").focus();
+            return false;
+        }
+
+        if(!$.isNumeric($("#amount").val()))
+        {
+            alert('Por favor, proporcione una cantidad v‡lida');
+            $("#amount").select();
+            return false;
+        }
+
+        return true;
+    }
+</script>
+
+<input type="hidden" id="bookingId" value="<?php echo $this->bookingId; ?>" />
+
+<h4>Description</h4>
+<input id="description" class="options" type="text"/>
+
+<h4>Cantidad</h4>
+<div class="input-prepend input-append">
+    <span class="add-on">$</span>
+    <input style="width:60px" type="text" class="options" id="amount">
+    <span class="add-on">.00</span>
+</div>
+
+<br/>
+<a id="add" href="" class="btn btn-primary">Agregar</a>

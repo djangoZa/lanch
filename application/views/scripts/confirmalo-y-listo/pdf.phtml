@@ -1,0 +1,79 @@
+<h1>Confirmacion</h1>
+
+<div class="row">
+    <strong>Empresa</strong> <?php echo $this->customerDetails['empresa']; ?><br/>
+    <strong>Responsable</strong> <?php echo $this->customerDetails['responsable']; ?><br/>
+    <strong>Tel</strong> <?php echo $this->customerDetails['tel']; ?><br/>
+    <strong>Mail</strong> <?php echo $this->customerDetails['mail']; ?>
+</div>
+<br/>
+<div class="row">
+    <strong>Direccion</strong><br/>
+    <?php echo nl2br($this->order->getAddress()); ?><br/>
+</div>
+<br/>
+<div class="row">
+    <strong>Fetcha Del Evento</strong> <?php echo $this->order->getDate(); ?><br/>
+    <strong>Horrio Del Servico</strong> <?php echo $this->order->getTime(); ?><br/>
+    <strong>Invitados</strong> <?php echo $this->order->getGuests(); ?><br/>
+</div>
+<br/>
+<div class="row">
+    <strong>Notes</strong><br/>
+    <?php echo nl2br($this->order->getNotes()); ?>
+</div>
+<br/>
+<div class="row">
+    <?php foreach($this->products as $category): ?>
+        <?php foreach($category as $groupId => $group): ?>
+            <?php $groupProductIds = array_keys($group); ?>
+            <?php $productIdDiff = array_intersect($groupProductIds, $this->selectedProductIds); ?>
+            <?php if(!empty($productIdDiff)): ?>
+                <div class="grid-50 confirmation-product-group" style="margin:0;padding:0;">
+                    <strong><?php echo ucwords($this->groups[$groupId]->getName()); ?></strong>
+                    <ul>
+                    <?php foreach ($group as $product): ?>
+                        <?php if (in_array($product->getId(), $this->selectedProductIds)): ?>
+                            <li><?php echo $product->getName(); ?></li>
+                        <?php endif ?>
+                    <?php endforeach ?>
+                    </ul>
+                </div>
+            <?php endif ?>
+        <?php endforeach ?>
+    <?php endforeach ?>
+</div>
+
+<div class="row">
+    <strong>Camareros Sugeridos</strong>
+    <?php echo $this->order->getWaiters(); ?>
+    <br/>
+    <strong>Vajilla Formal</strong>
+    <?php echo ($this->order->getFormalDishes() == 0) ? 'Not' : null ?> Required
+    <br/>
+    <strong>Equipmento</strong><br/>
+    <ul class="confirmation-equipment">
+        <?php foreach($this->equipment as $equipment):?>
+            <?php if(!in_array($equipment->getId(), $this->order->getEquipmentBlackList())): ?>
+                <li><?php echo $equipment->getName(); ?></li>
+            <?php endif ?>
+        <?php endforeach ?>
+    </ul>
+    <strong>Equipmento Extra</strong><br/>
+    <?php echo nl2br($this->order->getExtraEquipment()); ?>
+</div>
+<br/>
+<div class="row">
+    <strong>SubTotal</strong> <?php echo round($this->order->getSubTotal(), 2); ?><br/>
+    <strong>Discount</strong> <?php echo $this->order->getDiscount($this->size); ?>%<br/>
+    <strong>IVA</strong> <?php echo $this->order->getTax()?>%<br/>
+    <strong>Total</strong> <?php echo round($this->order->getTotal(), 2); ?>
+</div>
+<br/>
+<div class="row">
+    <strong>Sebastian Jinchuk</strong><br/>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet sapien at mi imperdiet congue. 
+    Nunc tristique erat eu lectus sagittis ornare. 
+    Etiam elementum, lectus eget congue malesuada, lacus libero molestie magna, eget facilisis dolor odio quis nunc. 
+    Mauris nec rhoncus enim.
+</div>

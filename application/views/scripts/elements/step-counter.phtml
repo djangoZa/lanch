@@ -1,0 +1,37 @@
+<?php $controller = Zend_Controller_Front::getInstance()->getRequest()->getControllerName(); ?>
+<div class="grid-25">
+    <table class="<?php echo ($controller == 'elegi-el-servico' OR $controller == 'index')? 'on' : 'off'; ?>">
+        <tr>
+            <td class="number"><h1>1</h1></td>
+            <td class="seperator">></td>
+            <td class="description">ELEGÍ<br/>EL SERVICO</td>
+        </tr>
+    </table>
+</div>
+<div class="grid-25">
+    <table class="<?php echo ($controller == 'customizalo-a-tu-medida' OR $controller == 'index')? 'on' : 'off'; ?>"> 
+        <tr>
+            <td class="number"><h1>2</h1></td>
+            <td class="seperator">></td>
+            <td class="description">CUSTOMIZALO<br/> A TU MEDIDA</td>
+        </tr>
+    </table>
+</div>
+<div class="grid-25">
+    <table class="<?php echo ($controller == 'completa-tus-datos' OR $controller == 'index')? 'on' : 'off'; ?>">
+        <tr>
+            <td class="number"><h1>3</h1></td>
+            <td class="seperator">></td>
+            <td class="description">COMPLETÁ<br/>TUS DATOS</td>
+        </tr>
+    </table>
+</div>
+<div class="grid-25">
+    <table class="<?php echo ($controller == 'confirmalo-y-listo' OR $controller == 'index')? 'on' : 'off'; ?>">
+        <tr>
+            <td class="number"><h1>4</h1></td>
+            <td class="seperator">></td>
+            <td class="description">CONFIRMALO,<br/> ¡Y LISTO!</td>
+        </tr>
+    </table>
+</div>

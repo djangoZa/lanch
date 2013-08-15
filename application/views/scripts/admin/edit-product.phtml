@@ -1,0 +1,97 @@
+<h2>Editar Producto</h2>
+
+<?php if(!empty($_POST) && empty($this->messages)): ?>
+    <div class="alert alert-success">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      Your changes were saved succesfully!
+    </div>
+<?php else: ?>
+    <?php foreach ($this->messages as $key => $messages): ?>
+        <?php foreach ($messages as $message): ?>
+            <div class="alert alert-error">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <?php echo $message; ?>
+            </div>
+        <?php endforeach ?>
+    <?php endforeach ?>
+<?php endif ?>
+
+<form class="form-vertical" action="" method="post">
+
+    <input type="hidden" name="id" value="<?php echo $this->product->getId(); ?>" />
+
+    <div class="control-group">
+        <div class="controls">
+            <a class="btn btn-success" href="/admin/products">
+                <i class="icon-arrow-left icon-white"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="name">Nombre</label>
+        <div class="controls">
+          <input type="text" name="name" id="name" value="<?php echo $this->product->getName(); ?>">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="name">Categoría</label>
+        <div class="controls">
+            <select name="category_id">
+                <?php foreach ($this->categories as $category): ?>
+                    <option value="<?php echo $category->getId(); ?>" <?php echo ($this->product->getCategoryId() == $category->getId())? 'selected' : null ; ?>><?php echo $category->getName(); ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="name">Grupo</label>
+        <div class="controls">
+            <select name="group_id">
+                <?php foreach ($this->groups as $group): ?>
+                    <option value="<?php echo $group->getId(); ?>" <?php echo ($this->product->getGroupId() == $group->getId())? 'selected' : null ; ?>><?php echo $group->getName(); ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
+    </div>   
+
+    <div class="control-group">
+        <label class="control-label" for="price">Precio</label>
+        <div class="controls">
+            <div class="input-prepend input-append">
+                <span class="add-on">$</span>
+                <input class="span1" id="appendedPrependedInput" type="text" name="price" id="price" value="<?php echo $this->product->getPrice(); ?>">
+                <span class="add-on">.00</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="needs_waiters">Requiere Camareros</label>
+        <div class="controls">
+          <input type="checkbox" name="needs_waiters" id="needs_waiters" value="<?php echo $this->product->getNeedsWaiters(); ?>" <?php echo ($this->product->getNeedsWaiters())? 'checked' : ''; ?>>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label">Equipamiento Especial</label>
+        <div class="controls">
+            <?php foreach ($this->equipment as $equipment): ?>
+                <label class="checkbox">
+                    <input type="checkbox" name="equipment[<?php echo $equipment->getId(); ?>]" value="1" <?php echo (in_array($equipment->getId(), array_keys($this->product->getEquipment())))? 'checked' : ''; ?>>
+                    <?php echo $equipment->getName(); ?>
+                </label>
+            <?php endforeach ?>
+        </div>
+    </div>
+
+    <br/>
+    <div class="control-group">
+        <div class="controls">
+            <input class="btn btn-primary" type="submit" value="Guardar" />
+        </div>
+    </div>
+
+</form>

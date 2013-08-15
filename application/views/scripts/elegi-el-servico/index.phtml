@@ -1,0 +1,23 @@
+<div class="grid-container">
+    <?php foreach($this->combos as $combo): ?>
+        <div class="grid-30 push-5 combo">
+            <div class="combo-image" style="background:url(<?php echo $combo->getImageUrl(); ?>) no-repeat;"></div>
+            <div class="combo-message">
+                <span>&nbsp;FULL $<?php echo $this->comboPrices[$combo->getId()]['full']?>/P</span>
+            </div>
+            <h1><?php echo $combo->getName(); ?></h1>
+            <ul>
+                <li>
+                    <a class="button" href="/elegi-el-servico/ver?size=basico&comboId=<?php echo $combo->getId(); ?>">BASICÓ</a>
+                </li>
+                <li>
+                    <a class="button" href="/elegi-el-servico/ver?size=medio&comboId=<?php echo $combo->getId(); ?>">MEDIO</a>
+                </li>
+                <li>
+                    <a class="button" href="/elegi-el-servico/ver?size=full&comboId=<?php echo $combo->getId(); ?>">FULL</a>
+                </li>
+            </ul>
+            <a class="button" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=full">PERSONALIZAR</a>
+        </div>
+    <?php endforeach ?>
+</div>
