@@ -1,20 +1,61 @@
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/bootstrap.tooltip.min.js"></script>
+<script type="text/javascript" src="/js/order.js"></script>
 <script type="text/javascript" src="/js/personalizar.js"></script>
 <script type="text/javascript">
-    $(document).ready(function(){
-        changeAmountOfGuests();
-        $("#guests").bind('change', function(){
-            changeAmountOfGuests();
-            saveGuests();
+$(document).ready(function()
+{
+    //When the user lands on the personal product selection page, check the selected products
+    if (isOnPersonalProductSelectionPage()) {
+        checkSelectedPersonalProducts();
+    }
+    
+    //get the order options
+    getOrderOptions(function(options)
+    {
+        var order = new Order(options);
+
+        //populate inputs
+        order.populatePersonalizeInputs();
+
+        //validate guest input
+        order.validateGuestInput();
+
+        //react to change of guest
+        $('#guests').bind('change', function()
+        {
+            self = order;
+            self.validateGuestInput();
+            self.validateWaiterInput();
+            self.saveOrderParams(function(self){
+                self.updateTotals();
+            });
+        });
+
+        //When the user clicks on an input, handle accordingly
+        $('input[type="checkbox"]').bind('click', function()
+        {
+            savePersonalProductSelection(order, function(order)
+            {
+                order.saveOrderParams(function(order)
+                {
+                    order.updateTotals();
+                });
+            });
         });
     });
+});
 </script>
 <div class="grid-65 push-5">
 
-    <input type="hidden" id="comboId" name="comboId" value="<?php echo $this->combo->getId(); ?>" />
-    <input type="hidden" id="size" name="size" value="<?php echo $this->size; ?>" />
+    <input type="hidden" class="order-input" id="comboId" name="comboId" value="<?php echo $this->combo->getId(); ?>" />
+    <input type="hidden" class="order-input" id="size" name="size" value="<?php echo $this->size; ?>" />
     <input type="hidden" class="order-input" id="minimimGuests" value="<?php echo $this->combo->getMinimimGuests(); ?>" />
+    <input type="hidden" class="order-input" id="guestsPerWaiter" value="<?php echo $this->combo->getGuestsPerWaiter(); ?>" />
+    <input type="hidden" class="order-input" id="waiters" value="" />
+    <input type="hidden" class="order-input" id="formalDishes" value=""/>
+    <input type="hidden" class="order-input" id="discount" value="<?php echo $this->combo->getDiscount($this->size); ?>" />
+    <input type="hidden" class="order-input" id="tax" value="<?php echo $this->combo->getTax(); ?>" />
     
     <div class="grid-50 combo-title">
         <h1>Servico Personalizado</h1>
@@ -65,13 +106,15 @@
 
                         <ul>
                             <?php foreach ($products as $product): ?>
+                                <?php $isEnabled = in_array($categoryId, $this->combo->getActiveCategoriesBySizeId($this->size)); ?>
                                 <li>
                                     <input
                                         data="<?php echo $product->getId(); ?>"
                                         type="checkbox"
                                         <?php echo (in_array($product->getId(), $this->combo->getSelectedProductIdsBySizeId($this->size))) ? 'checked' : null ; ?>
+                                        <?php echo ($isEnabled ) ? 'enabled' : 'disabled'; ?>
                                     />
-                                    <?php echo $product->getName(); ?>
+                                    <span style="color:<?php echo ($isEnabled) ? 'black' : 'grey'; ?>;"><?php echo $product->getName(); ?></span>
                                 </li>
                             <?php endforeach ?>
                         </ul>
@@ -97,8 +140,17 @@
         <form action="" method="post">
 
             <div class="row">
-                <label>INVITADOS:</label>
-                <input id="guests" type="text" value="<?php echo $this->order->getGuests(); ?>"/>
+                <label>
+                    INVITADOS:&nbsp;
+                    <input style="width:45px;padding:5px;" class="order-input" id="guests" type="text" value="<?php echo $this->order->getGuests(); ?>"/>
+                </label>
+            </div>
+            
+            <div class="row">
+                <label>
+                    TOTAL:&nbsp;
+                    <input style="width:95px;padding:5px;" id="total" type="text" value="<?php echo $this->order->getTotal(); ?>" disabled/>
+                </label>
             </div>
 
             <a class="button" href="/customizalo-a-tu-medida?comboId=<?php echo $this->combo->getId();?>&size=<?php echo $this->size; ?>">PRESUPUESTAR</a>

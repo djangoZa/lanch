@@ -1,6 +1,8 @@
 <?php
 class Lanch_Order_Service
 {
+    private $_taxPercent = 21;
+    
     private $_orderRepository;
     private $_comboRepository;
     private $_comboProductRepository;
@@ -40,8 +42,8 @@ class Lanch_Order_Service
         $subTotal = $this->_addCostOfComboBasePrice($subTotal, $combo);
         $subTotal = $this->_addCostOfProducts($subTotal, $products, $order);
         $subTotal = $this->_addCostOfEquipment($subTotal, $equipment, $order);
-        $subTotal = $this->_addCostOfWaiters($subTotal, $order);
-        $subTotal = $this->_addCostOfFormalDishes($subTotal, $order);
+        $subTotal = $this->_addCostOfWaiters($subTotal, $order, $combo);
+        $subTotal = $this->_addCostOfFormalDishes($subTotal, $order, $combo);
         
         $order['sub_total'] = $subTotal;
         
@@ -68,22 +70,27 @@ class Lanch_Order_Service
         return $total;
     }
     
-    private function _addCostOfWaiters($total, Array $order)
+    private function _addCostOfWaiters($total, Array $order, Lanch_Combo $combo)
     {
         $waiters = $order['waiters'];
-        $pricePerWaiter = 50;
-        $total += ($pricePerWaiter * $waiters);
+        $pricePerWaiter = $combo->getPricePerWaiter();
+        
+        //sum the cost of the waiters
+        for ($i = 0; $i < $waiters; $i++) {
+            $total += $pricePerWaiter;
+        }
+        
         return $total;
     }
     
-    private function _addCostOfFormalDishes($total, Array $order)
+    private function _addCostOfFormalDishes($total, Array $order, Lanch_Combo $combo)
     {
         $formalDishes = $order['formalDishes'];
         $guests = $order['guests'];
-        $pricePerFormalDish = 50;
+        $pricePerFormalDish = $combo->getPricePerPersonForFormalDishes();
     
         if ($formalDishes != 0) {
-            $total +=  ($pricePerFormalDish * $guests);
+            $total += ($pricePerFormalDish * $guests);
         }
     
         return $total;
@@ -129,7 +136,7 @@ class Lanch_Order_Service
     
     private function _addTax($total)
     {
-        $total += ($total * (25 / 100));
+        $total += ($total * ($this->_taxPercent / 100));
 
         return $total;
         

@@ -10,7 +10,7 @@ class ElegiElServicoController extends Zend_Controller_Action
     {
         $comboRepository = new Lanch_Combo_Repository();
         $comboPriceService = new Lanch_Combo_Price_Service();
-        
+
         $combos = $comboRepository->getCombos();
         $comboPrices = $comboPriceService->getTotalPricesBySizeAndComboId($combos);
         
@@ -76,7 +76,7 @@ class ElegiElServicoController extends Zend_Controller_Action
 
         $comboProductRepository->savePersonalProductIdsByComboId($comboId, $checkedProductIds);
 
-        exit(1);
+        exit(0);
     }
 
     public function getPersonalProductSelectionAjaxAction()
@@ -89,6 +89,6 @@ class ElegiElServicoController extends Zend_Controller_Action
 
         echo json_encode($productIds);
 
-        exit(1);
+        exit(0);
     }
 }

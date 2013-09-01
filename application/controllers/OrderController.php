@@ -6,7 +6,7 @@ class OrderController extends  Zend_Controller_Action
         $orderRepository = new Lanch_Order_Repository();
         $order = $orderRepository->getOrderSession();
         echo json_encode($order);
-        exit(1);
+        exit(0);
     }
 
     public function setOrderSessionAjaxAction()
@@ -20,7 +20,7 @@ class OrderController extends  Zend_Controller_Action
         $order = $orderService->setTotal($order);
         $orderRepository->setOrderSession($order);
         
-        exit(1);
+        exit(0);
     }
     
     public function setOrderGuestsAjaxAction()
@@ -28,6 +28,6 @@ class OrderController extends  Zend_Controller_Action
         $guests = $this->getRequest()->getParam('guests');
         $orderRepository = new Lanch_Order_Repository();;
         $orderRepository->saveGuestsToOrderSession($guests);
-        exit(1);
+        exit(0);
     }
 }

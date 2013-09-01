@@ -1,6 +1,8 @@
 <?php
 class Lanch_Booking_Service
 {
+    private $_taxPercent = 21;
+    
     private $_orderRepository;
     private $_comboRepository;
     private $_productRepository;
@@ -229,16 +231,18 @@ class Lanch_Booking_Service
         
         //line item formal/normal dishes
         $isRequiredFormalDishes = $order->getFormalDishes();
+        $pricePerFormalDish = $combo->getPricePerPersonForFormalDishes();
         $booking->addLineItem(array(
             'name' => 'Vajilla' . (($isRequiredFormalDishes) ? ' Formal' : null),
-            'price' => ($isRequiredFormalDishes) ? 50 : 0,
+            'price' => ($isRequiredFormalDishes) ? $pricePerFormalDish : 0,
             'quantity' => $order->getGuests()
         ));
         
         //line item for waiters
+        $pricePerWaiter = $combo->getPricePerWaiter();
         $booking->addLineItem(array(
             'name' => 'Waiters',
-            'price' => 50,
+            'price' => $pricePerWaiter,
             'quantity' => $order->getWaiters()
         ));
 
@@ -255,7 +259,7 @@ class Lanch_Booking_Service
     
     private function _addTax(Lanch_Booking $booking, Lanch_Order $order)
     {
-        $booking->addTaxPercent(25);
+        $booking->addTaxPercent($this->_taxPercent);
         
         return $booking;
     }

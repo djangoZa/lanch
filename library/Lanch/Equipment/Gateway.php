@@ -21,7 +21,9 @@ class Lanch_Equipment_Gateway
     }
     
     public function getEquipmentByProductIds(Array $productIds)
-    {
+    {    
+        $productIds = (!empty($productIds)) ? $productIds : array(0);
+        
         $select = $this->_db->select();
         $select->from('product_equipment');
         $select->join('equipment', 'equipment.id = product_equipment.equipment_id');

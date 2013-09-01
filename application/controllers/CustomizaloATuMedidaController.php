@@ -1,11 +1,11 @@
 <?php
 class CustomizaloATuMedidaController extends Zend_Controller_Action
-{
+{    
     public function init()
     {
         $this->_helper->layout->setLayout('front');
     }
-
+    
     public function indexAction()
     {
         $comboId = $this->getRequest()->getParam('comboId');

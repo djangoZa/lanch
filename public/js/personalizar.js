@@ -1,16 +1,27 @@
-$(document).ready(function(){
-
-    //When the user lands on the personal product selection page, check the selected products
-    if (isOnPersonalProductSelectionPage()) {
-        checkSelectedPersonalProducts();
-    }
-
-    //When the user clicks on an input, handle accordingly
-    $('input[type="checkbox"]').bind('click', function()
+function validateGuestInput()
+{
+    var minGuests = $("#minimimGuests").val();
+    var guests = $('#guests').val();
+    
+    //if too few guests have been specified
+    if (Number(guests) < Number(minGuests)) 
     {
-        savePersonalProductSelection();
-    });
-});
+        $('#guests').val(minGuests);
+        //showToolTipMessage('guests', 'Guests modified');
+        $('#guests').trigger('change');
+    }
+    
+    //if number with a decimal point has been specified
+    if (!isInt(guests))
+    {
+        $('#guests').val(Math.ceil(guests));
+    }
+}
+
+function isInt(n)
+{
+   return n % 1 === 0;
+}
 
 function checkSelectedPersonalProducts()
 {
@@ -39,7 +50,7 @@ function isOnPersonalProductSelectionPage()
     return out;
 }
 
-function savePersonalProductSelection()
+function savePersonalProductSelection(order, callback)
 {
     var comboId = getComboId();
     var checkedProductIds = getCheckedProductIds();
@@ -50,11 +61,8 @@ function savePersonalProductSelection()
             'comboId':comboId,
             'checkedProductIds':checkedProductIds
         },
-    }).done(function(){
-        if (!isOnPersonalProductSelectionPage()) {
-            var comboId = getComboId();
-            window.location.href = '/elegi-el-servico/personalizar?comboId='+comboId+'&size=personal';
-        }
+    }).done(function(response){
+        callback(order);
     });
 }
 
@@ -75,41 +83,13 @@ function getCheckedProductIds()
     return out;
 }
 
-function changeAmountOfGuests()
+//get the order options
+function getOrderOptions(callback)
 {
-    var minGuests = $("#minimimGuests").val();
-    var guests = $('#guests').val();
-    
-    if (Number(guests) < Number(minGuests)) 
-    {
-        showToolTipMessage('guests', 'We changed the amount of guests because this combo requires a minimum of '+minGuests);
-        $('#guests').val(minGuests);
-        $('#guests').trigger('change');
-    }
-}
-
-function showToolTipMessage(inputName, message)
-{
-    inputId = "#" + inputName;
-    
-    $(inputId).tooltip(
-    {
-        title: message,
-        animation: true,
-        placement: 'top',
-        trigger: 'manual',
-    });
-
-    $(inputId).tooltip('show');
-}
-
-function saveGuests()
-{
-    var guests = $('#guests').val();
     $.ajax({
-        url: "/order/set-order-guests-ajax",
-        data: {
-            'guests':guests
-        },
+        url: "/order/get-order-session-ajax",
+        dataType: "json"
+    }).done(function(options){
+        callback(options)
     });
 }

@@ -278,17 +278,15 @@ class AdminController extends Zend_Controller_Action
 
         $this->view->messages = array();
 
-        if (!empty($_POST)) {
-
+        if (!empty($_POST))
+        {
             $comboService = new Lanch_Combo_Service();
             $messages = $comboService->isValidComboData($_POST, $_FILES);
-
             if (empty($messages)) {
                 $comboService->updateCombo($_POST, $_FILES);
             } else {
                 $this->view->messages = $messages;
             }
-
         }
 
         $productService = new Lanch_Product_Service();

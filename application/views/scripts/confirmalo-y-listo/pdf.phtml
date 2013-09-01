@@ -51,6 +51,7 @@
     <strong>Vajilla Formal</strong>
     <?php echo ($this->order->getFormalDishes() == 0) ? 'Not' : null ?> Required
     <br/>
+    <!-- 
     <strong>Equipmento</strong><br/>
     <ul class="confirmation-equipment">
         <?php foreach($this->equipment as $equipment):?>
@@ -61,10 +62,11 @@
     </ul>
     <strong>Equipmento Extra</strong><br/>
     <?php echo nl2br($this->order->getExtraEquipment()); ?>
+    -->
 </div>
 <br/>
 <div class="row">
-    <strong>SubTotal</strong> <?php echo round($this->order->getSubTotal(), 2); ?><br/>
+    <!-- <strong>SubTotal</strong> <?php echo round($this->order->getSubTotal(), 2); ?><br/> -->
     <strong>Discount</strong> <?php echo $this->order->getDiscount($this->size); ?>%<br/>
     <strong>IVA</strong> <?php echo $this->order->getTax()?>%<br/>
     <strong>Total</strong> <?php echo round($this->order->getTotal(), 2); ?>

@@ -69,7 +69,7 @@ class Lanch_Product_Service
         foreach ($products as $product) {
             if (!empty($groups[$product->getGroupId()])) {
                 if (!empty($categories[$product->getCategoryId()])) {
-                    $out[$product->getCategoryId()][$product->getGroupId()][$product->getId()] = $product;    
+                    $out[$product->getCategoryId()][$product->getGroupId()][$product->getId()] = $product;
                 }
             }
         }

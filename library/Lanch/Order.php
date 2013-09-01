@@ -21,7 +21,7 @@ class Lanch_Order
     {
         $this->comboId = $order['comboId'];
         $this->size = $order['size'];
-        $this->guests = $order['guests'];
+        $this->guests = (!empty($order['guests'])) ? $order['guests'] : 1;
         $this->waiters = $order['waiters'];
         $this->formalDishes = $order['formalDishes'];
         $this->date = $order['date'];
@@ -32,7 +32,7 @@ class Lanch_Order
         $this->subTotal = $order['sub_total'];
         $this->total = $order['total'];
         $this->discount = $order['discount'];
-        $this->tax = 25;
+        $this->tax = $order['tax'];
         $this->pricePerPerson = $this->total / $this->guests;
         
         if (!empty($order['customerDetails']))

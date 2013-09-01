@@ -34,7 +34,10 @@ class Lanch_Combo_Gateway
             'name' => $data['name'],
             'base_price' => $data['base_price'],
             'discount' => $data['discount'],
-            'minimum_guests' => $data['minimum_guests']
+            'minimum_guests' => $data['minimum_guests'],
+            'price_per_waiter' => $data['price_per_waiter'],
+            'guests_per_waiter' => $data['guests_per_waiter'],
+            'formal_dishes_price_per_guest' => $data['formal_dishes_price_per_guest']
         ));
 
         return $this->_db->lastInsertId();
@@ -46,7 +49,10 @@ class Lanch_Combo_Gateway
             'name' => $data['name'],
             'base_price' => $data['base_price'],
             'discount' => $data['discount'],
-            'minimum_guests' => $data['minimum_guests']
+            'minimum_guests' => $data['minimum_guests'],
+            'price_per_waiter' => $data['price_per_waiter'],
+            'guests_per_waiter' => $data['guests_per_waiter'],
+            'formal_dishes_price_per_guest' => $data['formal_dishes_price_per_guest']
         ), 'id = ' . $comboId);
     }
 
@@ -58,5 +64,11 @@ class Lanch_Combo_Gateway
     public function saveImageNameByComboId($comboId, $imageName)
     {
         return $this->_db->update('combos', array('image_name' => $imageName), 'id = ' . $comboId);
+    }
+    
+    public function updateActiveCategoriesByComboId($comboId, $activeCategories)
+    {
+        $categoryIdString = Zend_Json::encode($activeCategories);
+        return $this->_db->update('combos', array('active_category_ids' => $categoryIdString), 'id = ' . $comboId);
     }
 }

@@ -48,6 +48,7 @@
         <?php echo $this->order->getWaiters(); ?><br/>
         <label>Vajilla Formal</label>
         <?php echo ($this->order->getFormalDishes() == 0) ? 'Not' : null ?> Required<br/>
+<!--
         <br/><br/>
         <label>Equipmento</label><br/>
         <ul class="confirmation-equipment">
@@ -59,6 +60,7 @@
         </ul><br/>
         <label>Equipmento Extra</label><br/>
         <?php echo nl2br($this->order->getExtraEquipment()); ?>
+-->
     </div>
     <div class="grid-60 row">
         <label>Sebastian Jinchuk</label><br/>
@@ -68,7 +70,7 @@
         Mauris nec rhoncus enim.
     </div>
     <div class="grid-40 row">
-        <label>SubTotal</label> <?php echo round($this->order->getSubTotal(), 2); ?><br/>
+        <!--<label>SubTotal</label> <?php echo round($this->order->getSubTotal(), 2); ?><br/>-->
         <label>Discount</label> <?php echo $this->order->getDiscount($this->size); ?>%<br/>
         <label>IVA</label> <?php echo $this->order->getTax()?>%<br/>
         <label>Total</label> <?php echo round($this->order->getTotal(), 2); ?>

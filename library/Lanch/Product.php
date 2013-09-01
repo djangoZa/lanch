@@ -33,7 +33,7 @@ class Lanch_Product
 
     public function getName()
     {
-        return $this->_name;
+        return ucfirst($this->_name);
     }
 
     public function getPrice()

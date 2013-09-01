@@ -55,6 +55,16 @@ class Lanch_Combo_Service
         //update the this combo's selected products
         $comboProducts = (!empty($data['combo_products'])) ? $data['combo_products'] : array();
         $this->_comboProductRepository->updateByComboId($comboId, $comboProducts);
+        
+        //update this combos selected active categories
+        $activeCategories = (!empty($data['active_categories'])) ? $data['active_categories'] : array();
+        $buffer = array();
+        foreach ($activeCategories as $sizeId => $categoryIds) {
+            $buffer[$sizeId] = array_unique($categoryIds);
+        }
+        $activeCategories = $buffer;
+        
+        $this->_repository->updateActiveCategoriesByComboId($comboId, $activeCategories);
     }
 
     public function deleteComboById($comboId)

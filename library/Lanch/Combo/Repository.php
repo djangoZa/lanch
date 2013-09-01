@@ -68,6 +68,11 @@ class Lanch_Combo_Repository
     {
         return $this->_gateway->saveImageNameByComboId($comboId, $imageName);
     }
+    
+    public function updateActiveCategoriesByComboId($comboId, $activeCategories)
+    {
+        return $this->_gateway->updateActiveCategoriesByComboId($comboId, $activeCategories);
+    }
 
     public function storeComboImage(Array $files)
     {
@@ -86,7 +91,7 @@ class Lanch_Combo_Repository
         $combo->setSelectedProductsIds($comboProducts);
         
         //set the minimum waiters
-        $combo->setMinimumWaiters($combo->getMinimimGuests() * 0.5);
+        $combo->setMinimumWaiters(ceil($combo->getMinimimGuests() / $combo->getGuestsPerWaiter()));
 
         return $combo;
     }

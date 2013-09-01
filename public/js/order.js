@@ -25,8 +25,6 @@ Order.prototype.populateInputs = function()
     $('#address').val(this.address);
     $('#notes').val(this.notes);
     $('#extraEquipment').val(this.extraEquipment);
-    $('#pricePerPerson').val(this.pricePerPerson);
-    $('#total').val(this.total);
 
     //uncheck blacklisted equipment
     $(this.equipmentBlackList).each(function(key, equipmentId){
@@ -34,16 +32,47 @@ Order.prototype.populateInputs = function()
     });
 }
 
-Order.prototype.changeAmountOfGuests = function()
+Order.prototype.populatePersonalizeInputs = function()
+{
+    $("#formalDishes").val(this.formalDishes);
+}
+
+Order.prototype.validateGuestInput = function()
 {
     var minGuests = $("#minimimGuests").val();
     var guests = $('#guests').val();
     
+    //if too few guests have been specified
     if (Number(guests) < Number(minGuests)) 
     {
-        showToolTipMessage('guests', 'We changed the amount of guests because this combo requires a minimum of '+minGuests);
         $('#guests').val(minGuests);
+        //showToolTipMessage('guests', 'Guests modified');
         $('#guests').trigger('change');
+    }
+    
+    //if number with a decimal point has been specified
+    if (!this.isInt(guests))
+    {
+        $('#guests').val(Math.ceil(guests));
+    }
+}
+
+Order.prototype.isInt = function(n)
+{
+   return n % 1 === 0;
+}
+
+Order.prototype.validateWaiterInput = function()
+{
+    var guestsPerWaiter = $("#guestsPerWaiter").val(); 
+    var waiters = $('#waiters').val();
+    var guests = $('#guests').val();
+    var suggestedWaiters = Math.ceil(guests / guestsPerWaiter);
+    
+    if (Number(waiters) < Number(suggestedWaiters) || Number(waiters) > Number(suggestedWaiters)) {
+        $('#waiters').val(suggestedWaiters);
+        //showToolTipMessage('Waiter modified');
+        $('#waiters').trigger('change');
     }
 }
 
@@ -70,7 +99,6 @@ Order.prototype.saveOrderParams = function(callback)
         switch(inputId)
         {
             case 'guests':
-                self.changeAmountOfGuests();
                 self[inputId] = $(input).val();
                 break;
             case 'comboId':
@@ -86,6 +114,7 @@ Order.prototype.saveOrderParams = function(callback)
             case 'customerDetails':
             case 'total':
             case 'discount':
+            case 'tax':
                 self[inputId] = inputValue;
             case 'equipment':
                 var blacklist = [];
@@ -105,7 +134,7 @@ Order.prototype.saveOrderParams = function(callback)
         }
         
     });
- 
+
     //persist the order
     $.ajax({
         url: "/order/set-order-session-ajax",
@@ -123,52 +152,19 @@ Order.prototype.saveOrderParams = function(callback)
                 notes: self.notes,
                 extraEquipment: self.extraEquipment,
                 equipmentBlackList: self.equipmentBlackList,
-                pricePerPerson: self.pricePerPerson,
                 customerDetails: self.customerDetails,
-                total: self.total,
+                tax: self.tax,
                 discount: self.discount
             }
         }
     }).done(function(response)
     {
-        self.updateTotals();
-        
         if (callback != undefined)
         {
-            callback();
+            callback(self);
         }
     });
 }
-
-$(document).ready(function()
-{
-    getOrderOptions(function(options)
-    {
-        var thisOrder = new Order(options);
-        
-        //populate inputs
-        thisOrder.populateInputs();
-        
-        //save params
-        thisOrder.saveOrderParams();
-        
-        //update the guests and waiters
-        thisOrder.changeAmountOfGuests();
-        
-        
-        $('.order-input').change(function()
-        {
-            thisOrder.saveOrderParams();
-        });
-
-        $('#confirmalo').bind('click', function()
-        {
-            thisOrder.saveOrderParams(function(){
-                redirectToDetailsPage();
-            });
-        });
-    });
-});
 
 function getOrderOptions(callback)
 {
@@ -189,10 +185,17 @@ function showToolTipMessage(inputName, message)
         title: message,
         animation: true,
         placement: 'top',
-        trigger: 'manual',
+        trigger: 'manual'
     });
 
     $(inputId).tooltip('show');
+    
+    //remove the tooltip when the user clicks another input
+    $('input').bind('click', function(){
+        $('#guests').tooltip('hide');
+        $('#waiters').tooltip('hide');
+        $('form').unbind('click');
+    });
 }
 
 function redirectToDetailsPage()

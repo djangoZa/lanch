@@ -5,10 +5,62 @@
 <script type="text/javascript">
 $(document).ready(function()
 {
-    $( "#date" ).datepicker({
-        autoSize:true
+    getOrderOptions(function(options)
+    {
+        var thisOrder = new Order(options);
+        
+        //populate inputs
+        thisOrder.populateInputs();
+        
+        //validate guest and waiter input
+        thisOrder.validateGuestInput();
+        thisOrder.validateWaiterInput();
+        thisOrder.saveOrderParams(function(self){
+            self.updateTotals();
+        });
+        
+        $('.order-input').change(function()
+        {
+            self = thisOrder;
+            self.saveOrderParams();
+        });
+        
+        $('#guests').bind('change', function()
+        {
+            self = thisOrder;
+            self.validateGuestInput();
+            self.validateWaiterInput();
+            self.saveOrderParams(function(self){
+                self.updateTotals();
+            });
+        });
+
+        $('#waiters').bind('change', function()
+        {
+            thisOrder.validateWaiterInput();
+        });
+        
+        $('#formalDishes').bind('change', function()
+        {
+            self = thisOrder;
+            self.saveOrderParams(function(self){
+                self.updateTotals();
+            });
+        });
+        
+        $('#confirmalo').bind('click', function()
+        {
+            thisOrder.saveOrderParams(function(){
+                redirectToDetailsPage();
+            });
+        });
+
+        $("#date").datepicker({
+            autoSize:true
+        });
     });
 });
+
 </script>
   
 <div class="grid-30 push-5 contracted-service">
@@ -16,7 +68,9 @@ $(document).ready(function()
     <input type="hidden" class="order-input" id="comboId" value="<?php echo $this->combo->getId(); ?>" />
     <input type="hidden" class="order-input" id="size" value="<?php echo $this->size; ?>" />
     <input type="hidden" class="order-input" id="minimimGuests" value="<?php echo $this->combo->getMinimimGuests(); ?>" />
-    <input type="hidden" class="order-input" id="discount" value="<?php echo $this->combo->getDiscount(); ?>" />
+    <input type="hidden" class="order-input" id="guestsPerWaiter" value="<?php echo $this->combo->getGuestsPerWaiter(); ?>" />
+    <input type="hidden" class="order-input" id="discount" value="<?php echo $this->combo->getDiscount($this->size); ?>" />
+    <input type="hidden" class="order-input" id="tax" value="<?php echo $this->combo->getTax(); ?>" />
     <div class="row">
 
         <h1>Servicio Contratado</h1>
@@ -50,7 +104,9 @@ $(document).ready(function()
 
         <ul class="detalle">
             <?php foreach ($this->selectedProductIds as $productId): ?>
-                <li><?php echo $this->products[$productId]->getName(); ?></li>
+                <?php if (!empty($this->products[$productId])) : ?>
+                    <li><?php echo $this->products[$productId]->getName(); ?></li>
+                <?php endif ?>
             <?php endforeach ?>
         </ul>
 
@@ -76,7 +132,7 @@ $(document).ready(function()
         <div class="row">
             <label>CAMAREROS SUGERIDOS:</label>
             <?php $waiters = $this->order->getWaiters(); ?>
-            <input data-toggle="tooltip" class="order-input" id="waiters" type="text" value="<?php echo (!empty($waiters)) ? $waiters : $this->combo->getMinimumWaiters(); ?>"/>
+            <input data-toggle="tooltip" class="order-input" id="waiters" type="text" value="<?php echo (!empty($waiters)) ? $waiters : $this->combo->getMinimumWaiters(); ?>" disabled/>
         </div>
 
         <div class="row">
@@ -86,8 +142,8 @@ $(document).ready(function()
                 <option value="1">Yes</option>
             </select>
         </div>
-
-        <div class="row equipment">
+<!--
+        <div class="row equipment"">
             <label>EQUIPMENTO:</label>
             <ul>
                 <?php foreach($this->equipment as $equipment): ?>
@@ -99,11 +155,11 @@ $(document).ready(function()
             </ul>
         </div>
         
-        <div class="row equipment">
+        <div class="row equipment"">
             <label>EQUIPMENTO EXTRA:</label><br/>
             <textarea class="order-input" id="extraEquipment" style="width:100%;height:100px;"></textarea>
         </div>
-
+ -->
         <div class="row info-util">
             <label>INFO ÛTIL:</label>
             <p>Suspendisse quis dui eget neque tincidunt porttitor ac sed turpis. Maecenas sit amet neque risus. Nunc a nibh lacus. Maecenas lorem urna, ornare quis bibendum a, placerat in ligula.</p>
@@ -121,33 +177,34 @@ $(document).ready(function()
 </div>
 
 <div class="grid-30 push-5 event-data">
-
-    <h1>Datos del Evento</h1>
-
-    <div class="row">
-        <label>FECHA:</label>
-        <input type="text" class="order-input" id="date" style="padding:5px;cursor:pointer;"/>
-    </div>
-
-    <div class="row">
-        <label>DIRECCIÓN:</label><br/>
-        <textarea class="order-input" id="address"></textarea>
-    </div>
-
-    <div class="row">
-        <label>HORARIO:</label>
-        <select class="order-input" id="time">
-            <?php for ($a=1; $a<25; $a++) : ?>
-                <option value="<?php echo $a; ?>:00"><?php echo $a; ?>:00</option>
-            <?php endfor ?>
-        </select>
-    </div>
-
-    <div class="row">
-        <label>OBSERVACIONES:</label><br/>
-        <textarea class="order-input" id="notes"></textarea>
-    </div>
-
-    <a href="" onclick="return false;" class="button" id="confirmalo">CONFIRMALO</a>
-
+    <form>
+        <h1>Datos del Evento</h1>
+        
+        <div class="row">
+            <label>FECHA:</label>
+            <input type="text" class="order-input" id="date" style="padding:5px;cursor:pointer;"/>
+        </div>
+    
+        <div class="row">
+            <label>DIRECCIÓN:</label><br/>
+            <textarea class="order-input" id="address"></textarea>
+        </div>
+    
+        <div class="row">
+            <label>HORARIO:</label>
+            <select class="order-input" id="time">
+                <?php for ($a=1; $a<25; $a++) : ?>
+                    <option value="<?php echo $a; ?>:00"><?php echo $a; ?>:00</option>
+                <?php endfor ?>
+            </select>
+        </div>
+    
+        <div class="row">
+            <label>OBSERVACIONES:</label><br/>
+            <textarea class="order-input" id="notes"></textarea>
+        </div>
+    
+        <a href="" onclick="return false;" class="button" id="confirmalo">CONFIRMALO</a>
+        
+    </form>
 </div>
