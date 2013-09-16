@@ -16,7 +16,7 @@
                 <a class="button <?php echo ($this->size == 'full') ? 'active' : null; ?>" href="/elegi-el-servico/ver/?size=full&comboId=<?php echo $this->combo->getId(); ?>">FULL</a>
             </li>
         </ul>
-        <a class="button" href="/elegi-el-servico/personalizar?comboId=<?php echo $this->combo->getId(); ?>&size=full">
+        <a class="button" href="/elegi-el-servico/personalizar?comboId=<?php echo $this->combo->getId(); ?>&size=<?php echo $this->size; ?>">
             PERSONALIZAR
         </a>
     </div>
@@ -46,7 +46,7 @@
                                 <a class="button" href="/elegi-el-servico/ver/?size=full&comboId=<?php echo $combo->getId(); ?>">FULL</a>
                             </li>
                         </ul>
-                        <a class="button" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>">
+                        <a class="button" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=full">
                             PERSONALIZAR
                         </a>
                     </div>

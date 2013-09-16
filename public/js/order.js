@@ -62,7 +62,7 @@ Order.prototype.isInt = function(n)
    return n % 1 === 0;
 }
 
-Order.prototype.validateWaiterInput = function()
+Order.prototype.validateWaiterInput = function(callback)
 {
     var guestsPerWaiter = $("#guestsPerWaiter").val(); 
     var waiters = $('#waiters').val();
@@ -71,8 +71,12 @@ Order.prototype.validateWaiterInput = function()
     
     if (Number(waiters) < Number(suggestedWaiters) || Number(waiters) > Number(suggestedWaiters)) {
         $('#waiters').val(suggestedWaiters);
-        //showToolTipMessage('Waiter modified');
-        $('#waiters').trigger('change');
+        console.log('use suggested waiters');
+    }
+    
+    if (callback != undefined)
+    {
+        callback(self);
     }
 }
 
@@ -84,6 +88,21 @@ Order.prototype.updateTotals = function()
     }).done(function(order){
         $('#total').val(Math.round(order.total * 100) / 100);
         $('#pricePerPerson').val(Math.round(order.pricePerPerson * 100) / 100);
+    });
+}
+
+Order.prototype.updateOrderTotalWithPersonalProducts = function(callback)
+{
+    var self = this;
+    
+    $.ajax({
+        url: "/order/update-order-session-with-personal-products-ajax"
+    }).done(function(response)
+    {
+        if (callback != undefined)
+        {
+            callback(self);
+        }
     });
 }
 
@@ -159,8 +178,8 @@ Order.prototype.saveOrderParams = function(callback)
         }
     }).done(function(response)
     {
-        if (callback != undefined)
-        {
+        self.updateTotals();
+        if (callback != undefined) {
             callback(self);
         }
     });

@@ -71,8 +71,10 @@
                 <div class="control-group">
                     <label class="control-label" for="base_price">Precio Por Camarero</label>
                     <div class="controls">
-                        <div class="input">
-                            <input class="span1" type="text" name="price_per_waiter" id="price_per_waiter" value="<?php echo $this->combo->getPricePerWaiter(); ?>">
+                        <div class="input-prepend input-append">
+                            <span class="add-on">$</span>
+                            <input class="span1" id="appendedPrependedInput" type="text" name="price_per_waiter" id="price_per_waiter" value="<?php echo $this->combo->getPricePerWaiter(); ?>">
+                            <span class="add-on">.00</span>
                         </div>
                     </div>
                 </div>
@@ -89,8 +91,10 @@
             <div class="control-group">
                 <label class="control-label" for="base_price">Precio de vajilla formal por invitados</label>
                 <div class="controls">
-                    <div class="input">
-                        <input class="span1" type="text" name="formal_dishes_price_per_guest" id="formal_dishes_price_per_guest" value="<?php echo $this->combo->getPricePerPersonForFormalDishes(); ?>">
+                    <div class="input-prepend input-append">
+                        <span class="add-on">$</span>
+                        <input class="span1" id="appendedPrependedInput" type="text" name="formal_dishes_price_per_guest" id="formal_dishes_price_per_guest" value="<?php echo $this->combo->getPricePerPersonForFormalDishes(); ?>">
+                        <span class="add-on">.00</span>
                     </div>
                 </div>
             </div>

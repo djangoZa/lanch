@@ -115,6 +115,12 @@ class Lanch_Booking_Service
             $total += $lineItem->getPrice() * $lineItem->getQuantity();
         }
         
+        //minus the discount
+        if($booking->getDiscount() > 0)
+        {
+            $total -= (($total * ($booking->getDiscount() / 100)));
+        }
+        
         //sum up the adjustments
         $adjustments = $booking->getAdjustments();
         foreach ($adjustments as $adjustment)
@@ -122,20 +128,14 @@ class Lanch_Booking_Service
             $total += $adjustment->getAmount();
         }
 
-        //add the subtotal to the booking
-        $booking->addSubTotal($total);
-        
-        //minus the discount
-        if($booking->getDiscount() > 0)
-        {
-            $total -= (($total * ($booking->getDiscount() / 100)));
-        }
-        
-        //add the tax
-        $total += (($total * ($booking->getTaxPercent() / 100)));
-
         //add the total to the booking
         $booking->addTotal($total);
+        
+        //deduct the tax
+        $total -= (($total * ($booking->getTaxPercent() / 100)));
+
+        //add the subtotal to the booking
+        $booking->addSubTotal($total);
         
         return $booking;
     }

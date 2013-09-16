@@ -62,6 +62,7 @@ function savePersonalProductSelection(order, callback)
             'checkedProductIds':checkedProductIds
         },
     }).done(function(response){
+        console.log(response);
         callback(order);
     });
 }

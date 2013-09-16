@@ -48,15 +48,15 @@ class ElegiElServicoController extends Zend_Controller_Action
         $productService = new Lanch_Product_Service();
         $groupRepository = new Lanch_group_Repository();
         $categoryRepository = new Lanch_Category_Repository();
-        $orderRepository = new Lanch_Order_Repository();
+        $orderService = new Lanch_Order_Service();
         
         $combo = $comboRepository->getComboById($comboId);
         $combos = $comboRepository->getCombos();
         $products = $productService->getProductsHierarchicallyByCategoryAndGroup();
         $groups = $groupRepository->getGroups();
         $categories = $categoryRepository->getCategories();
-        $order = $orderRepository->getOrderSession();
-        
+        $order = $orderService->getOrder($size);
+
         $this->view->size = $size;
         $this->view->combo = $combo;
         $this->view->combos = $combos;

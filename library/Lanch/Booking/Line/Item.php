@@ -14,7 +14,7 @@ class Lanch_Booking_Line_Item
     
     public function getName()
     {
-        return $this->_name;
+        return ucfirst($this->_name);
     }
     
     public function getPrice()

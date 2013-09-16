@@ -129,7 +129,7 @@ class Lanch_Order
     
     public function getPricePerPerson()
     {
-        return $this->pricePerPerson;
+        return sprintf("%01.2f", $this->total / $this->guests);
     }
     
     public function getCustomerDetails()

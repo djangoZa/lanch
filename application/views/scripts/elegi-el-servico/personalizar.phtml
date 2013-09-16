@@ -6,7 +6,8 @@
 $(document).ready(function()
 {
     //When the user lands on the personal product selection page, check the selected products
-    if (isOnPersonalProductSelectionPage()) {
+    if (isOnPersonalProductSelectionPage())
+    {
         checkSelectedPersonalProducts();
     }
     
@@ -20,28 +21,37 @@ $(document).ready(function()
 
         //validate guest input
         order.validateGuestInput();
-
+        
         //react to change of guest
         $('#guests').bind('change', function()
         {
             self = order;
             self.validateGuestInput();
             self.validateWaiterInput();
-            self.saveOrderParams(function(self){
-                self.updateTotals();
-            });
+            self.saveOrderParams();
         });
 
         //When the user clicks on an input, handle accordingly
         $('input[type="checkbox"]').bind('click', function()
         {
+            //save the selection
             savePersonalProductSelection(order, function(order)
             {
-                order.saveOrderParams(function(order)
+                //update the total of the order
+                order.updateOrderTotalWithPersonalProducts(function(order)
                 {
-                    order.updateTotals();
+                    //redirect to personalize page if not on it already
+                    if (isOnPersonalProductSelectionPage() === false)
+                    {
+                        var comboId = $("#comboId").val();
+                        window.location.href = "/elegi-el-servico/personalizar?comboId=" + comboId + "&size=personal";
+                    } else {  
+                        //update the totals in the gui
+                        order.updateTotals();
+                    }
                 });
             });
+            
         });
     });
 });
@@ -149,10 +159,17 @@ $(document).ready(function()
             <div class="row">
                 <label>
                     TOTAL:&nbsp;
-                    <input style="width:95px;padding:5px;" id="total" type="text" value="<?php echo $this->order->getTotal(); ?>" disabled/>
+                    <input style="width:95px;padding:5px;" id="total" type="text" value="<?php echo $this->order->getTotal();?>" disabled/>
                 </label>
             </div>
 
+            <div class="row">
+                <label>
+                    $/pers:&nbsp;
+                    <input style="width:95px;padding:5px;" id="pricePerPerson" type="text" value="<?php echo $this->order->getPricePerPerson();?>" disabled/>
+                </label>
+            </div>
+            
             <a class="button" href="/customizalo-a-tu-medida?comboId=<?php echo $this->combo->getId();?>&size=<?php echo $this->size; ?>">PRESUPUESTAR</a>
 
         </form>

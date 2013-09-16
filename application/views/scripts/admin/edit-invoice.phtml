@@ -121,10 +121,10 @@
         </thead>
         <tbody>
             <tr>
-                <td><?php printf("%.2f", $this->booking->getSubTotal()); ?></td>
+                <td><?php echo $this->booking->getSubTotal(); ?></td>
                 <td><?php echo $this->booking->getTaxPercent(); ?>%</td>
                 <td><?php echo $this->booking->getDiscount(); ?>%</td>
-                <td><?php printf("%.2f", $this->booking->getTotal()); ?></td>
+                <td><?php echo $this->booking->getTotal(); ?></td>
             </tr>
         </tbody>
     </table>

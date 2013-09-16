@@ -21,7 +21,7 @@ class ConfirmaloYListoController extends Zend_Controller_Action
         $selectedProductIds = $combo->getSelectedProductIdsBySizeId($size);
         $equipment = $equipmentRepository->getEquipmentByProductIds($selectedProductIds);
         $groups = $groupRepository->getGroups();
-        
+
         $this->view->order = $order;
         $this->view->products = $products;
         $this->view->customerDetails = $order->getCustomerDetails();

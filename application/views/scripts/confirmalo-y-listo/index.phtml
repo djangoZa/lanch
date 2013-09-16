@@ -70,8 +70,8 @@
         Mauris nec rhoncus enim.
     </div>
     <div class="grid-40 row">
-        <!--<label>SubTotal</label> <?php echo round($this->order->getSubTotal(), 2); ?><br/>-->
         <label>Discount</label> <?php echo $this->order->getDiscount($this->size); ?>%<br/>
+        <label>SubTotal</label> <?php echo round($this->order->getSubTotal(), 2); ?><br/>
         <label>IVA</label> <?php echo $this->order->getTax()?>%<br/>
         <label>Total</label> <?php echo round($this->order->getTotal(), 2); ?>
     </div>

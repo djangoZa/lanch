@@ -58,11 +58,11 @@ class Lanch_Combo
     public function getDiscount($size)
     {
         $out = 0;
-        
+
         if ($size != 'personal') {
             $out = $this->_discount;
         }
-        
+
         return $out;
     }
     

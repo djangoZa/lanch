@@ -9,6 +9,7 @@ class Lanch_Order_Service
     private $_productRepository;
     private $_equipmentRepository;
     private $_customerDetails;
+    private $_size;
     
     public function __construct()
     {
@@ -24,12 +25,28 @@ class Lanch_Order_Service
         return $this->_orderRepository->getOrderSession();
     }
     
+    public function getOrder($size)
+    {
+        $order = $this->_orderRepository->getOrderSession();
+
+        //update the orders totals if its not in sync with the current size
+        $order = (array) $order;
+        $order['size'] = $size;
+        $order = $this->setTotal($order);
+        $order = $this->setSubTotal($order);
+        $this->_orderRepository->setOrderSession($order);
+        
+        $order = $this->_orderRepository->getOrderSession();
+        
+        return $order;
+    }
+    
     public function saveCustomerDetails(Array $details)
     {
         $this->_orderRepository->saveCustomerDetailsToOrderSession($details);
     }
     
-    public function setSubTotal(Array $order)
+    public function setTotal(Array $order)
     {
         //get the data needed to form the total
         $combo = $this->_getCombo($order);
@@ -37,29 +54,24 @@ class Lanch_Order_Service
         $equipment = $this->_getEquipment($products);
         
         //calculate the total
-        $subTotal = 0;
+        $total = 0;
          
-        $subTotal = $this->_addCostOfComboBasePrice($subTotal, $combo);
-        $subTotal = $this->_addCostOfProducts($subTotal, $products, $order);
-        $subTotal = $this->_addCostOfEquipment($subTotal, $equipment, $order);
-        $subTotal = $this->_addCostOfWaiters($subTotal, $order, $combo);
-        $subTotal = $this->_addCostOfFormalDishes($subTotal, $order, $combo);
+        $total = $this->_addCostOfComboBasePrice($total, $combo);
+        $total = $this->_addCostOfProducts($total, $products, $order);
+        $total = $this->_addCostOfEquipment($total, $equipment, $order);
+        $total = $this->_addCostOfWaiters($total, $order, $combo);
+        $total = $this->_addCostOfFormalDishes($total, $order, $combo);
+        $total = $this->_addDiscount($total, $combo, $order);
         
-        $order['sub_total'] = $subTotal;
-        
+        $order['total'] = ceil($total);
+
         return $order;
     }
     
-    public function setTotal(Array $order)
+    public function setSubTotal(Array $order)
     {
-        //get the data needed to form the total
-        $combo = $this->_getCombo($order);
-        
-        $total = $this->_addDiscount($order['sub_total'], $combo, $order);
-        $total = $this->_addTax($total);
-        
-        $order['total'] = $total;
-
+        $subTotal = $this->_deductTax($order['total']);
+        $order['sub_total'] = ceil($subTotal);
         return $order;
     }
     
@@ -134,9 +146,9 @@ class Lanch_Order_Service
         return $total;
     }
     
-    private function _addTax($total)
+    private function _deductTax($total)
     {
-        $total += ($total * ($this->_taxPercent / 100));
+        $total -= ($total * ($this->_taxPercent / 100));
 
         return $total;
         

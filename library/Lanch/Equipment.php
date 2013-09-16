@@ -19,7 +19,7 @@ class Lanch_Equipment
 
     public function getName()
     {
-        return $this->_name;
+        return ucfirst($this->_name);
     }
 
     public function getPrice()

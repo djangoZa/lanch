@@ -22,29 +22,9 @@ $(document).ready(function()
         $('.order-input').change(function()
         {
             self = thisOrder;
-            self.saveOrderParams();
-        });
-        
-        $('#guests').bind('change', function()
-        {
-            self = thisOrder;
             self.validateGuestInput();
-            self.validateWaiterInput();
-            self.saveOrderParams(function(self){
-                self.updateTotals();
-            });
-        });
-
-        $('#waiters').bind('change', function()
-        {
-            thisOrder.validateWaiterInput();
-        });
-        
-        $('#formalDishes').bind('change', function()
-        {
-            self = thisOrder;
-            self.saveOrderParams(function(self){
-                self.updateTotals();
+            self.validateWaiterInput(function(self){
+                self.saveOrderParams();
             });
         });
         
