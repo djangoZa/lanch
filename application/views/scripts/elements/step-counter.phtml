@@ -1,4 +1,5 @@
 <?php $controller = Zend_Controller_Front::getInstance()->getRequest()->getControllerName(); ?>
+<?php if(!in_array($controller, array('contacto','clientes','propuesta'))): ?>
 <div class="grid-25">
     <table class="<?php echo ($controller == 'elegi-el-servico' OR $controller == 'index')? 'on' : 'off'; ?>">
         <tr>
@@ -35,3 +36,4 @@
         </tr>
     </table>
 </div>
+<?php endif ?>

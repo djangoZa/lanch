@@ -66,10 +66,13 @@
 </div>
 <br/>
 <div class="row">
-    <!-- <strong>SubTotal</strong> <?php echo round($this->order->getSubTotal(), 2); ?><br/> -->
-    <strong>Discount</strong> <?php echo $this->order->getDiscount($this->size); ?>%<br/>
+    <?php $discount = $this->order->getDiscount($this->size); ?>
+    <?php if (!empty($discount)) : ?>
+        <strong>Discount</<strong>> <?php echo $this->order->getDiscount($this->size); ?>%<br/>
+    <?php endif ?>
+    <strong>Sub Total</strong> $<?php echo round($this->order->getSubTotal(), 0); ?><br/>
     <strong>IVA</strong> <?php echo $this->order->getTax()?>%<br/>
-    <strong>Total</strong> <?php echo round($this->order->getTotal(), 2); ?>
+    <strong>Total</strong> $<?php echo round($this->order->getTotal(), 0); ?>
 </div>
 <br/>
 <div class="row">

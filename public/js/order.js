@@ -64,6 +64,7 @@ Order.prototype.isInt = function(n)
 
 Order.prototype.validateWaiterInput = function(callback)
 {
+    var self = this;
     var guestsPerWaiter = $("#guestsPerWaiter").val(); 
     var waiters = $('#waiters').val();
     var guests = $('#guests').val();
@@ -71,7 +72,6 @@ Order.prototype.validateWaiterInput = function(callback)
     
     if (Number(waiters) < Number(suggestedWaiters) || Number(waiters) > Number(suggestedWaiters)) {
         $('#waiters').val(suggestedWaiters);
-        console.log('use suggested waiters');
     }
     
     if (callback != undefined)
@@ -82,21 +82,24 @@ Order.prototype.validateWaiterInput = function(callback)
 
 Order.prototype.updateTotals = function()
 {
+    var comboId = getComboId();
+    var size = getSize();
+    
     $.ajax({
-        url: "/order/get-order-session-ajax",
+        url: "/order/get-order-session-ajax?comboId=" + comboId + "&size=" + size,
         dataType:'json'
     }).done(function(order){
-        $('#total').val(Math.round(order.total * 100) / 100);
-        $('#pricePerPerson').val(Math.round(order.pricePerPerson * 100) / 100);
+        $('#total').val(order.total)
+        $('#pricePerPerson').val(order.pricePerPerson);
     });
 }
 
-Order.prototype.updateOrderTotalWithPersonalProducts = function(callback)
+Order.prototype.updateOrderTotalWithPersonalProducts = function(comboId, size, callback)
 {
     var self = this;
     
     $.ajax({
-        url: "/order/update-order-session-with-personal-products-ajax"
+        url: "/order/update-order-session-with-personal-products-ajax?comboId=" + comboId + "&size=" + size
     }).done(function(response)
     {
         if (callback != undefined)
@@ -185,10 +188,10 @@ Order.prototype.saveOrderParams = function(callback)
     });
 }
 
-function getOrderOptions(callback)
+function getOrderOptions(comboId, size, guests, waiters, callback)
 {
     $.ajax({
-        url: "/order/get-order-session-ajax",
+        url: "/order/get-order-session-ajax?comboId=" + comboId + "&size=" + size,
         dataType: "json"
     }).done(function(options){
         callback(options)
@@ -220,4 +223,16 @@ function showToolTipMessage(inputName, message)
 function redirectToDetailsPage()
 {
     window.location.href = "/completa-tus-datos";
+}
+
+function getComboId()
+{
+    var comboId = $("#comboId").val();
+    return comboId;
+}
+
+function getSize()
+{
+    var size = $("#size").val();
+    return size;
 }

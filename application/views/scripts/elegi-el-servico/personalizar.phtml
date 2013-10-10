@@ -10,9 +10,13 @@ $(document).ready(function()
     {
         checkSelectedPersonalProducts();
     }
-    
-    //get the order options
-    getOrderOptions(function(options)
+
+    var comboId = $("#comboId").val();
+    var size = $("#size").val();
+    var guests = $("#guests").val();
+    var waiters = $("#waiters").val();
+
+    getOrderOptions(comboId, size, guests, waiters, function(options)
     {
         var order = new Order(options);
 
@@ -21,38 +25,57 @@ $(document).ready(function()
 
         //validate guest input
         order.validateGuestInput();
+
+        //validate waiter input
+        order.validateWaiterInput(function(order)
+        {
+            //save params
+            order.saveOrderParams(function(order)
+            {
+                //update the totals in the gui
+                order.updateTotals();
+            });
+        });
         
         //react to change of guest
         $('#guests').bind('change', function()
         {
             self = order;
             self.validateGuestInput();
-            self.validateWaiterInput();
-            self.saveOrderParams();
+            self.validateWaiterInput(function(self){
+                self.saveOrderParams();
+            });
+            
         });
 
         //When the user clicks on an input, handle accordingly
         $('input[type="checkbox"]').bind('click', function()
         {
             //save the selection
-            savePersonalProductSelection(order, function(order)
+            savePersonalProductSelection(order, comboId, size, function(order)
             {
                 //update the total of the order
-                order.updateOrderTotalWithPersonalProducts(function(order)
+                order.updateOrderTotalWithPersonalProducts(comboId, size, function(order)
                 {
                     //redirect to personalize page if not on it already
                     if (isOnPersonalProductSelectionPage() === false)
                     {
                         var comboId = $("#comboId").val();
                         window.location.href = "/elegi-el-servico/personalizar?comboId=" + comboId + "&size=personal";
-                    } else {  
-                        //update the totals in the gui
-                        order.updateTotals();
+                    } else {
+                      //update the totals in the gui
+                      order.updateTotals();
                     }
                 });
             });
-            
         });
+
+        
+    });
+
+    //Bind the buttons with tooltips
+    $(".tip").bind('mouseenter', function(){
+        $(this).tooltip('show');
     });
 });
 </script>
@@ -62,14 +85,13 @@ $(document).ready(function()
     <input type="hidden" class="order-input" id="size" name="size" value="<?php echo $this->size; ?>" />
     <input type="hidden" class="order-input" id="minimimGuests" value="<?php echo $this->combo->getMinimimGuests(); ?>" />
     <input type="hidden" class="order-input" id="guestsPerWaiter" value="<?php echo $this->combo->getGuestsPerWaiter(); ?>" />
-    <input type="hidden" class="order-input" id="waiters" value="" />
-    <input type="hidden" class="order-input" id="formalDishes" value=""/>
+    <input type="hidden" class="order-input" id="waiters" value="<?php echo $this->combo->getMinimumWaiters(); ?>" />
     <input type="hidden" class="order-input" id="discount" value="<?php echo $this->combo->getDiscount($this->size); ?>" />
     <input type="hidden" class="order-input" id="tax" value="<?php echo $this->combo->getTax(); ?>" />
     
     <div class="grid-50 combo-title">
         <h1>Servico Personalizado</h1>
-        <p>SELECCIONE LOS PLATOS DE SU PREFERENCIA</p>
+        <label>SELECCIONE LOS PLATOS DE SU PREFERENCIA</label>
     </div>
 
     <div class="grid-50 combo-top-filters">
@@ -81,15 +103,16 @@ $(document).ready(function()
                 <li>
                     <a class="button combo-name <?php echo ($combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=full"><?php echo $combo->getName(); ?></a>
                     <ul class="combo-filter-sizes">
-                        <li><a class="button <?php echo ($this->size == 'basico' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=basico">B</a></li>
-                        <li><a class="button <?php echo ($this->size == 'medio' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=medio">M</a></li>
-                        <li><a class="button <?php echo ($this->size == 'full' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=full">F</a></li>
+                        <li><a class="tip button <?php echo ($this->size == 'basico' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=basico" data-toggle="tooltip" title="Basico">B</a></li>
+                        <li><a class="tip button <?php echo ($this->size == 'medio' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=medio" data-toggle="tooltip" title="Medio">M</a></li>
+                        <li><a class="tip button <?php echo ($this->size == 'full' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=full" data-toggle="tooltip" title="Full">F</a></li>
                         <li>
                             <a href="/elegi-el-servico/personalizar?comboId=<?php echo $combo->getId(); ?>&size=personal"
-                               class="button 
+                               class="tip button 
                                       <?php echo ($this->isPersonalTabInActive($this, $combo)) ? 'inactive' : null; ?>
                                       <?php echo ($this->isPersonalTabActive($this, $combo)) ? 'active' : null; ?>"
-                               onclick="<?php echo ($this->isPersonalTabInActive($this, $combo)) ? 'return false;' : null; ?>"
+                               onclick="<?php echo ($this->isPersonalTabInActive($this, $combo)) ? 'return false;' : null; ?>" 
+                               data-toggle="tooltip" title="Personal"
                             >P</a>
                         </li>
                     </ul>

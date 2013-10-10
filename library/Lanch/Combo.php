@@ -9,7 +9,7 @@ class Lanch_Combo
     private $_minimumWaiters;
     private $_pricePerWaiter;
     private $_pricePerPersonForFormalDishes;
-    private $_guestPerWaiter;
+    private $_guestsPerWaiter;
     private $_discount;
     private $_selectedProductsIds;
     private $_activeCategories;
@@ -73,7 +73,15 @@ class Lanch_Combo
     
     public function getMinimumWaiters()
     {
-        return $this->_minimumWaiters;
+        $out = null;
+
+        if(!empty($this->_minimumWaiters)) {
+            $out = $this->_minimumWaiters;
+        } else {
+            $out = (!empty($this->_guestsPerWaiter)) ? $this->_minimimGuests / $this->_guestsPerWaiter : 1;
+        }
+
+        return $out;
     }
     
     public function getPricePerWaiter()

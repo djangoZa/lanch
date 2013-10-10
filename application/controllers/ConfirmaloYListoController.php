@@ -14,7 +14,7 @@ class ConfirmaloYListoController extends Zend_Controller_Action
         $equipmentRepository = new Lanch_Equipment_Repository();
         $groupRepository = new Lanch_Group_Repository();
         
-        $order = $orderRepository->getOrderSession();
+        $order = $orderRepository->getOrderInSession();
         $combo = $comboRepository->getComboById($order->getComboId()); 
         $size = $order->getSize();
         $products = $productService->getProductsHierarchicallyByCategoryAndGroup();

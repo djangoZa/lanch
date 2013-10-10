@@ -70,10 +70,13 @@
         Mauris nec rhoncus enim.
     </div>
     <div class="grid-40 row">
-        <label>Discount</label> <?php echo $this->order->getDiscount($this->size); ?>%<br/>
-        <label>SubTotal</label> <?php echo round($this->order->getSubTotal(), 2); ?><br/>
+        <?php $discount = $this->order->getDiscount($this->size); ?>
+        <?php if (!empty($discount)) : ?>
+            <label>Discount</label> <?php echo $discount; ?>%<br/>
+        <?php endif ?>
+        <label>SubTotal</label> $<?php echo round($this->order->getSubTotal(), 0); ?><br/>
         <label>IVA</label> <?php echo $this->order->getTax()?>%<br/>
-        <label>Total</label> <?php echo round($this->order->getTotal(), 2); ?>
+        <label>Total</label> $<?php echo round($this->order->getTotal(), 0); ?>
     </div>
 </div>
 <div class="grid-20 push-10">

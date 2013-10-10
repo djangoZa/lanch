@@ -50,19 +50,18 @@ function isOnPersonalProductSelectionPage()
     return out;
 }
 
-function savePersonalProductSelection(order, callback)
+function savePersonalProductSelection(order, comboId, size, callback)
 {
     var comboId = getComboId();
+    var size = getSize();
     var checkedProductIds = getCheckedProductIds();
 
     $.ajax({
-        url: "/elegi-el-servico/save-personal-product-selection-ajax",
+        url: "/elegi-el-servico/save-personal-product-selection-ajax?comboId=" + comboId + "&size=" + size,
         data: {
-            'comboId':comboId,
             'checkedProductIds':checkedProductIds
         },
     }).done(function(response){
-        console.log(response);
         callback(order);
     });
 }
@@ -71,6 +70,12 @@ function getComboId()
 {
     var comboId = $('input[name="comboId"]').val();
     return comboId;
+}
+
+function getSize()
+{
+    var size = $('input[name="size"]').val();
+    return size;
 }
 
 function getCheckedProductIds()
@@ -85,10 +90,10 @@ function getCheckedProductIds()
 }
 
 //get the order options
-function getOrderOptions(callback)
+function getOrderOptions(comboId, size, guests, waiters, callback)
 {
     $.ajax({
-        url: "/order/get-order-session-ajax",
+        url: "/order/get-order-session-ajax?comboId=" + comboId + "&size=" + size,
         dataType: "json"
     }).done(function(options){
         callback(options)

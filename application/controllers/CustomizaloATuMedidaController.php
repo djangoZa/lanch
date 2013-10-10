@@ -21,7 +21,7 @@ class CustomizaloATuMedidaController extends Zend_Controller_Action
         $combo = $comboRepository->getComboById($comboId);
         $selectedProductIds = $combo->getSelectedProductIdsBySizeId($size);
         $equipment = $equipmentRepository->getEquipmentByProductIds($selectedProductIds);
-        $order = $orderService->getOrderSession();
+        $order = $orderService->getOrder($size, $comboId);
 
         $this->view->combos = $combos;
         $this->view->products = $products;

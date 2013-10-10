@@ -5,7 +5,12 @@
 <script type="text/javascript">
 $(document).ready(function()
 {
-    getOrderOptions(function(options)
+    var comboId = $("#comboId").val();
+    var size = $("#size").val();
+    var guests = $("#guests").val();
+    var waiters = $("#waiters").val();
+     
+    getOrderOptions(comboId, size, guests, waiters, function(options)
     {
         var thisOrder = new Order(options);
         
@@ -15,8 +20,8 @@ $(document).ready(function()
         //validate guest and waiter input
         thisOrder.validateGuestInput();
         thisOrder.validateWaiterInput();
-        thisOrder.saveOrderParams(function(self){
-            self.updateTotals();
+        thisOrder.saveOrderParams(function(thisOrder){
+            thisOrder.updateTotals();
         });
         
         $('.order-input').change(function()
@@ -39,6 +44,11 @@ $(document).ready(function()
             autoSize:true
         });
     });
+
+    //Bind the buttons with tooltips
+    $(".tip").bind('mouseenter', function(){
+        $(this).tooltip('show');
+    });
 });
 
 </script>
@@ -60,14 +70,15 @@ $(document).ready(function()
                 <li>
                     <a class="button combo-name <?php echo ($combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/customizalo-a-tu-medida?comboId=<?php echo $combo->getId(); ?>&size=full"><?php echo $combo->getName(); ?></a>
                     <ul class="combo-filter-sizes">
-                        <li><a class="button <?php echo ($this->size == 'basico' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/customizalo-a-tu-medida?comboId=<?php echo $combo->getId(); ?>&size=basico">B</a></li>
-                        <li><a class="button <?php echo ($this->size == 'medio' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/customizalo-a-tu-medida?comboId=<?php echo $combo->getId(); ?>&size=medio">M</a></li>
-                        <li><a class="button <?php echo ($this->size == 'full' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/customizalo-a-tu-medida?comboId=<?php echo $combo->getId(); ?>&size=full">F</a></li>
+                        <li><a class="tip button <?php echo ($this->size == 'basico' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/customizalo-a-tu-medida?comboId=<?php echo $combo->getId(); ?>&size=basico" data-toggle="tooltip" title="Basico">B</a></li>
+                        <li><a class="tip button <?php echo ($this->size == 'medio' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/customizalo-a-tu-medida?comboId=<?php echo $combo->getId(); ?>&size=medio" data-toggle="tooltip" title="Medio">M</a></li>
+                        <li><a class="tip button <?php echo ($this->size == 'full' && $combo->getId() == $this->combo->getId()) ? 'active' : null; ?>" href="/customizalo-a-tu-medida?comboId=<?php echo $combo->getId(); ?>&size=full" data-toggle="tooltip" title="Full">F</a></li>
                         <li><a href="/customizalo-a-tu-medida?comboId=<?php echo $combo->getId(); ?>&size=personal"
-                               class="button 
+                               class="tip button 
                                       <?php echo ($this->isPersonalTabInActive($this, $combo)) ? 'inactive' : null; ?>
                                       <?php echo ($this->isPersonalTabActive($this, $combo)) ? 'active' : null; ?>"
-                               onclick="<?php echo ($this->isPersonalTabInActive($this, $combo)) ? 'return false;' : null; ?>"
+                               onclick="<?php echo ($this->isPersonalTabInActive($this, $combo)) ? 'return false;' : null; ?>" 
+                               data-toggle="tooltip" title="Personal"
                             >P</a>
                         </li>
                     </ul>

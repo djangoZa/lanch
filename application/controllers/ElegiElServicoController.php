@@ -13,7 +13,7 @@ class ElegiElServicoController extends Zend_Controller_Action
 
         $combos = $comboRepository->getCombos();
         $comboPrices = $comboPriceService->getTotalPricesBySizeAndComboId($combos);
-        
+
         $this->view->combos = $combos;
         $this->view->comboPrices = $comboPrices;
     }
@@ -49,13 +49,13 @@ class ElegiElServicoController extends Zend_Controller_Action
         $groupRepository = new Lanch_group_Repository();
         $categoryRepository = new Lanch_Category_Repository();
         $orderService = new Lanch_Order_Service();
-        
+ 
         $combo = $comboRepository->getComboById($comboId);
         $combos = $comboRepository->getCombos();
         $products = $productService->getProductsHierarchicallyByCategoryAndGroup();
         $groups = $groupRepository->getGroups();
-        $categories = $categoryRepository->getCategories();
-        $order = $orderService->getOrder($size);
+        $categories = $categoryRepository->getCategories(); 
+        $order = $orderService->getOrder($size, $comboId);
 
         $this->view->size = $size;
         $this->view->combo = $combo;

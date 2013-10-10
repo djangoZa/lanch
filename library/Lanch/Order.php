@@ -19,21 +19,21 @@ class Lanch_Order
 
     public function __construct($order)
     {
-        $this->comboId = $order['comboId'];
-        $this->size = $order['size'];
-        $this->guests = (!empty($order['guests'])) ? $order['guests'] : 1;
-        $this->waiters = $order['waiters'];
-        $this->formalDishes = $order['formalDishes'];
-        $this->date = $order['date'];
-        $this->time = $order['time'];
-        $this->address = $order['address'];
-        $this->notes = $order['notes'];
-        $this->extraEquipment = $order['extraEquipment'];
-        $this->subTotal = $order['sub_total'];
-        $this->total = $order['total'];
-        $this->discount = $order['discount'];
-        $this->tax = $order['tax'];
-        $this->pricePerPerson = $this->total / $this->guests;
+        $this->comboId = (!empty($order['comboId'])) ? $order['comboId'] : null;
+        $this->size = (!empty($order['size'])) ? $order['size'] : null;
+        $this->guests = (!empty($order['guests'])) ? $order['guests'] : null;
+        $this->waiters = (!empty($order['waiters'])) ? $order['waiters'] : null;
+        $this->formalDishes = (!empty($order['formalDishes'])) ? $order['formalDishes'] : null;
+        $this->date = (!empty($order['date'])) ? $order['date'] : null;
+        $this->time = (!empty($order['time'])) ? $order['time'] : null;
+        $this->address = (!empty($order['address'])) ? $order['address'] : null;
+        $this->notes = (!empty($order['notes'])) ? $order['notes'] : null;
+        $this->extraEquipment = (!empty($order['extraEquipment'])) ? $order['extraEquipment'] : null;
+        $this->subTotal = (!empty($order['sub_total'])) ? $order['sub_total'] : null;
+        $this->total = (!empty($order['total'])) ? $order['total'] : 0;
+        $this->discount = (!empty($order['discount'])) ? $order['discount'] : null;
+        $this->tax = (!empty($order['tax'])) ? $order['tax'] : null;
+        $this->pricePerPerson = (!empty($this->guests)) ? round($this->total / $this->guests, 2) : 0;
         
         if (!empty($order['customerDetails']))
         {
@@ -129,7 +129,7 @@ class Lanch_Order
     
     public function getPricePerPerson()
     {
-        return sprintf("%01.2f", $this->total / $this->guests);
+        return $this->pricePerPerson;
     }
     
     public function getCustomerDetails()

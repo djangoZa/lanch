@@ -32,7 +32,7 @@ class Lanch_Booking_Service
     
     public function saveBookingByOrderSession()
     {
-        $order = $this->_orderRepository->getOrderSession();
+        $order = $this->_orderRepository->getOrderInSession();
         $combo = $this->_comboRepository->getComboById($order->getComboId());
 
         $booking = new Lanch_Booking();

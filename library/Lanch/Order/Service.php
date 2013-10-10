@@ -20,24 +20,26 @@ class Lanch_Order_Service
         $this->_equipmentRepository = new Lanch_Equipment_Repository();
     }
     
-    public function getOrderSession()
+    public function getOrderInSession()
     {
-        return $this->_orderRepository->getOrderSession();
+        $order = $this->_orderRepository->getOrderInSession();
+        return $order;
     }
-    
-    public function getOrder($size)
-    {
-        $order = $this->_orderRepository->getOrderSession();
 
-        //update the orders totals if its not in sync with the current size
-        $order = (array) $order;
-        $order['size'] = $size;
+    public function getOrder($size, $comboId)
+    {
+        $order = (array) $this->_orderRepository->getOrderSession($comboId, $size);
+
+        //populate the totals on the order
         $order = $this->setTotal($order);
         $order = $this->setSubTotal($order);
-        $this->_orderRepository->setOrderSession($order);
-        
-        $order = $this->_orderRepository->getOrderSession();
-        
+
+        //set the session
+        $this->_orderRepository->setOrderSession((array) $order);
+
+        //get the order session again
+        $order = $this->_orderRepository->getOrderSession($comboId, $size);
+
         return $order;
     }
     
@@ -57,12 +59,13 @@ class Lanch_Order_Service
         $total = 0;
          
         $total = $this->_addCostOfComboBasePrice($total, $combo);
+        $total = $this->_addCostOfGuests($total, $order);
         $total = $this->_addCostOfProducts($total, $products, $order);
         $total = $this->_addCostOfEquipment($total, $equipment, $order);
         $total = $this->_addCostOfWaiters($total, $order, $combo);
         $total = $this->_addCostOfFormalDishes($total, $order, $combo);
         $total = $this->_addDiscount($total, $combo, $order);
-        
+
         $order['total'] = ceil($total);
 
         return $order;
@@ -127,7 +130,7 @@ class Lanch_Order_Service
     
     private function _addCostOfEquipment($total, $equipment, $order)
     {
-        $equipmentBlackListedIds = $order['equipmentBlackList'];
+        $equipmentBlackListedIds = (!empty($order['equipmentBlackList'])) ? $order['equipmentBlackList'] : array();
         foreach ($equipment as $aEquipment) {
             if (!in_array($aEquipment->getId(), $equipmentBlackListedIds)) {
                 $total += $aEquipment->getPrice();

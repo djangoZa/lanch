@@ -9,7 +9,7 @@ class CompletaTusDatosController extends Zend_Controller_Action
     public function indexAction()
     {
         $orderService = new Lanch_Order_Service();
-        $order = $orderService->getOrderSession();
+        $order = $orderService->getOrderInSession();
         $customerDetails = $order->getCustomerDetails();
         $this->view->customerDetails = $customerDetails;
     }
