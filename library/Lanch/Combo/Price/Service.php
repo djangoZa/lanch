@@ -7,12 +7,7 @@ class Lanch_Combo_Price_Service
         $this->_productRepository = new Lanch_Product_Repository();
     }
     
-    public function getTotalPriceBySize($comboId, $size)
-    {
-        return $this->_getTotalPriceBySize($comboId, $size);
-    }
-    
-    public function getTotalPricesBySizeAndComboId(Array $combos)
+    public function getPricePerPersonBySizeAndComboId(Array $combos)
     {
         $out = array();
         
@@ -20,10 +15,11 @@ class Lanch_Combo_Price_Service
         {
             $comboId = $combo->getId();
             $sizes = array('basico', 'medio', 'full');
+            $minimumGuests = $combo->getMinimimGuests();
             
             foreach ($sizes as $size)
             {
-                $out[$comboId][$size] = $this->_getTotalPriceBySize($comboId, $size);
+                $out[$comboId][$size] = $this->_getTotalPriceBySize($comboId, $size) / $minimumGuests;
             }
         }
 
@@ -39,10 +35,27 @@ class Lanch_Combo_Price_Service
         $total = 0;
         
         $total = $this->_addCostOfComboBasePrice($total, $combo);
+        $total = $this->_addCostOfGuests($total, $combo);
         $total = $this->_addCostOfProducts($total, $products);
         $total = $this->_addCostOfEquipment($total, $equipment);
+        $total = $this->_addCostOfWaiters($total, $combo);
         $total = $this->_addDiscount($total, $combo, $size);
         
+        return $total;
+    }
+    
+    private function _addCostOfWaiters($total, $combo)
+    {
+        $waiters = $combo->getMinimumWaiters();
+        $pricePerWaiter = $combo->getPricePerWaiter();
+        $total += $pricePerWaiter * $waiters;
+        return $total;
+    }
+    
+    private function _addCostOfGuests($total, $combo)
+    {
+        $minimumGuests = $combo->getMinimimGuests();
+        $total = $total * $minimumGuests;
         return $total;
     }
     
@@ -64,7 +77,7 @@ class Lanch_Combo_Price_Service
     private function _addDiscount($total, Lanch_Combo $combo, $size)
     {
         if ($size != 'personal') {
-            $total -= ($total * 0.5);
+            $total -= ($total * ($combo->getDiscount($size) / 100));
         }
     
         return $total;

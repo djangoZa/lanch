@@ -2,7 +2,7 @@
     <div class="grid-30 push-5 combo">
         <div class="combo-image" style="background:url(<?php echo $this->combo->getImageUrl(); ?>) no-repeat;"></div>
         <div class="combo-message">
-            <span>&nbsp;<?php echo strtoupper($this->size); ?> $<?php echo $this->comboTotalPrice; ?>/P</span>
+            <span>&nbsp;<?php echo strtoupper($this->size); ?> $<?php echo $this->comboPrices[$this->combo->getId()][$this->size]; ?>/P</span>
         </div>
         <h1><?php echo $this->combo->getName(); ?></h1>
         <ul>
