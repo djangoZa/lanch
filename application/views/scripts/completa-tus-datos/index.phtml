@@ -1,6 +1,5 @@
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/customer-details.js"></script>
-
 <div class="grid-30 push-35" style="text-align:center;">
     <h1>Datos Basicos</h1>
 </div>
@@ -9,23 +8,43 @@
     <form id="details-form" method="post" action="/completa-tus-datos/guardar-datos">
         <div class="grid-100 row">
             <label for="empresa">Empresa</label>
-            <input name="empresa" class="empresa" type="text" value="<?php echo $this->customerDetails['empresa']; ?>" />
+            <input 
+                name="empresa" 
+                class="empresa" 
+                type="text" 
+                value="<?php echo $this->customerDetails['empresa']; ?>" 
+            />
         </div>
         <div class="clear"></div>
         <div class="grid-100 row">
             <label for="responsable">Responsable de contacto</label>
             <div class="clear"></div>
-            <input name="responsable" class="responsable" type="text" value="<?php echo $this->customerDetails['responsable']; ?>"/>
+            <input 
+                name="responsable" 
+                class="responsable <?php echo (in_array('responsable', $this->params['missing_fields'])) ? 'red': null; ?>" 
+                type="text" 
+                value="<?php echo (isset($this->params['responsable'])) ? $this->params['responsable'] : $this->customerDetails['responsable']; ?>"
+            />
         </div>
         <div class="clear"></div>
         <div class="grid-100 row">
             <label for="tel">Tel&nbsp;&nbsp;</label>
-            <input name="tel" class="tel" type="text" value="<?php echo $this->customerDetails['tel']; ?>"/>
+            <input 
+                name="tel" 
+                class="tel <?php echo (in_array('tel', $this->params['missing_fields'])) ? 'red': null; ?>" 
+                type="text" 
+                value="<?php echo (isset($this->params['tel'])) ? $this->params['tel'] : $this->customerDetails['tel']; ?>"
+            />
         </div>
         <div class="clear"></div>
         <div class="grid-100 row">
             <label for="mail">Mail</label>
-            <input name="mail" class="mail" type="text" value="<?php echo $this->customerDetails['mail']; ?>"/>
+            <input 
+                name="mail" 
+                class="mail <?php echo (in_array('mail', $this->params['missing_fields'])) ? 'red': null; ?>" 
+                type="text"
+                value="<?php echo (isset($this->params['mail'])) ? $this->params['mail'] : $this->customerDetails['mail']; ?>"
+            />
         </div>
     </form>
 </div>

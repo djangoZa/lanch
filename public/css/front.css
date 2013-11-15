@@ -2,18 +2,6 @@ body{
 padding:20px 0 0 0;
 }
 
-/*
-label, .button, .home-picture-message, 
-.combo-message span, 
-.category h1, .category .group h1{
-font-family: 'Raleway', sans-serif;
-}
-
-.landingPage h1, .landingPage h2, .combo-top-filters h1, .combo-title h1, .combo h1, .combo-mini h1, .steps{
-font-family: 'Bowlby One', cursive;
-}
-*/
-
 .logo{
 margin-bottom:30px;
 }
@@ -355,6 +343,14 @@ width:81%;
 
 .customer-details .tel{
 width:81%;
+}
+
+.customer-details .red
+{
+background-color:#FFC7C7;
+border:2px solid #FFC7C7;
+color:black;
+font-weight:bold;
 }
 
 .customer-details .responsable

@@ -19,7 +19,7 @@ class Lanch_Combo_Price_Service
             
             foreach ($sizes as $size)
             {
-                $out[$comboId][$size] = $this->_getTotalPriceBySize($comboId, $size) / $minimumGuests;
+                $out[$comboId][$size] = ceil($this->_getTotalPriceBySize($comboId, $size) / $minimumGuests);
             }
         }
 
@@ -35,12 +35,11 @@ class Lanch_Combo_Price_Service
         $total = 0;
         
         $total = $this->_addCostOfComboBasePrice($total, $combo);
-        $total = $this->_addCostOfGuests($total, $combo);
-        $total = $this->_addCostOfProducts($total, $products);
+        $total = $this->_addCostOfProducts($total, $products, $combo);
         $total = $this->_addCostOfEquipment($total, $equipment);
         $total = $this->_addCostOfWaiters($total, $combo);
         $total = $this->_addDiscount($total, $combo, $size);
-        
+
         return $total;
     }
     
@@ -65,10 +64,12 @@ class Lanch_Combo_Price_Service
         return $total;
     }
     
-    private function _addCostOfProducts($total, Array $products)
+    private function _addCostOfProducts($total, Array $products, Lanch_Combo $combo)
     {
+        $guests = $combo->getMinimimGuests();
+        
         foreach ($products as $product) {
-            $total += $product->getPrice();
+            $total += $product->getPrice() * $guests;
         }
     
         return $total;
@@ -76,10 +77,7 @@ class Lanch_Combo_Price_Service
     
     private function _addDiscount($total, Lanch_Combo $combo, $size)
     {
-        if ($size != 'personal') {
-            $total -= ($total * ($combo->getDiscount($size) / 100));
-        }
-    
+        $total -= $total * ($combo->getDiscount($size) / 100);
         return $total;
     }
     

@@ -20,6 +20,37 @@ class Lanch_Order_Service
         $this->_equipmentRepository = new Lanch_Equipment_Repository();
     }
     
+    public function validateDatos(Array $params)
+    {
+        $response = array(
+            'status' => true,
+            'missing_fields' => array() 
+        );
+        
+        //contact person
+        if (empty($params['responsable'])) {
+            $response['missing_fields'][] = 'responsable';
+        }
+        
+        //telephone number
+        if (empty($params['tel'])) {
+            $response['missing_fields'][] = 'tel';
+        }
+        
+        //mail address
+        if (empty($params['mail']) || (!filter_var($params['mail'], FILTER_VALIDATE_EMAIL))) {
+            $response['missing_fields'][] = 'mail';
+        }
+        
+        //set status
+        if (count($response['missing_fields']) > 0) 
+        {
+            $response['status'] = false;
+        }
+        
+        return $response;
+    }
+    
     public function getOrderInSession()
     {
         $order = $this->_orderRepository->getOrderInSession();
@@ -59,7 +90,6 @@ class Lanch_Order_Service
         $total = 0;
          
         $total = $this->_addCostOfComboBasePrice($total, $combo);
-        $total = $this->_addCostOfGuests($total, $order);
         $total = $this->_addCostOfProducts($total, $products, $order);
         $total = $this->_addCostOfEquipment($total, $equipment, $order);
         $total = $this->_addCostOfWaiters($total, $order, $combo);
@@ -78,22 +108,13 @@ class Lanch_Order_Service
         return $order;
     }
     
-    private function _addCostOfGuests($total, Array $order)
-    {
-        $guests = $order['guests'];
-        $total = $total * $guests;
-        return $total;
-    }
-    
     private function _addCostOfWaiters($total, Array $order, Lanch_Combo $combo)
     {
         $waiters = $order['waiters'];
         $pricePerWaiter = $combo->getPricePerWaiter();
         
         //sum the cost of the waiters
-        for ($i = 0; $i < $waiters; $i++) {
-            $total += $pricePerWaiter;
-        }
+        $total += $pricePerWaiter * $waiters;
         
         return $total;
     }
@@ -130,11 +151,11 @@ class Lanch_Order_Service
     
     private function _addCostOfEquipment($total, $equipment, $order)
     {
-        $equipmentBlackListedIds = (!empty($order['equipmentBlackList'])) ? $order['equipmentBlackList'] : array();
+        //$equipmentBlackListedIds = (!empty($order['equipmentBlackList'])) ? $order['equipmentBlackList'] : array();
         foreach ($equipment as $aEquipment) {
-            if (!in_array($aEquipment->getId(), $equipmentBlackListedIds)) {
+            //if (!in_array($aEquipment->getId(), $equipmentBlackListedIds)) {
                 $total += $aEquipment->getPrice();
-            }
+            //}
         }
 
         return $total;

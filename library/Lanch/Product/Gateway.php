@@ -12,9 +12,10 @@ class Lanch_Product_Gateway
     {
         $select = $this->_db->select();
         $select->from('products');
-        $select->where('deleted = ?', 0);
-        $select->order('category_id DESC');
-        $select->order('group_id DESC');
+        $select->join('categories', 'categories.id = products.category_id', array('order'));
+        $select->where('products.deleted = ?', 0);
+        $select->order('categories.order ASC');
+        $select->order('products.group_id DESC');
 
         $rows = $this->_db->fetchAll($select);
 

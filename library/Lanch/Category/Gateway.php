@@ -13,6 +13,7 @@ class Lanch_Category_Gateway
         $select = $this->_db->select();
         $select->from('categories');
         $select->where('deleted = ?', 0);
+        $select->order('order', 'ASC');
 
         return $this->_db->fetchAll($select);
     }

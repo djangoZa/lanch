@@ -10,7 +10,7 @@ class ElegiElServicoController extends Zend_Controller_Action
     {
         $comboRepository = new Lanch_Combo_Repository();
         $comboPriceService = new Lanch_Combo_Price_Service();
-
+        
         $combos = $comboRepository->getCombos();
         $comboPrices = $comboPriceService->getPricePerPersonBySizeAndComboId($combos);
 
