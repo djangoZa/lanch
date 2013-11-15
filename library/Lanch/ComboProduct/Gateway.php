@@ -33,7 +33,10 @@ class Lanch_ComboProduct_Gateway
     {
         $select = $this->_db->select();
         $select->from('combo_product');
-        $select->where('combo_id = ?', $comboId);
+        $select->join('products','products.id = combo_product.product_id', null);
+        $select->join('categories','categories.id = products.category_id', array('order'));
+        $select->where('combo_product.combo_id = ?', $comboId);
+        $select->order('categories.order ASC');
 
         return $this->_db->fetchAll($select);
     }
